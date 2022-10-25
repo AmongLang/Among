@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 /**
  * Message with type(info, warn or error) and position in source (optional), and exception (optional).
  */
-public class Report{
+public final class Report{
 	private final ReportType type;
 	private final String message;
 	private final int sourcePosition;

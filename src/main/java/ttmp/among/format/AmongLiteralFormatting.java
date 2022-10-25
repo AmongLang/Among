@@ -2,7 +2,9 @@ package ttmp.among.format;
 
 import java.util.regex.Pattern;
 
-public class AmongLiteralFormatting{
+public final class AmongLiteralFormatting{
+	private AmongLiteralFormatting(){}
+
 	private static final Pattern NEWLINE = Pattern.compile("\r\n?|\n");
 	private static final Pattern BACKSPACE = Pattern.compile("\b");
 	private static final Pattern FORMAT = Pattern.compile("\f");

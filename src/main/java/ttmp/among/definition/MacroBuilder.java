@@ -15,7 +15,7 @@ import java.util.function.BiConsumer;
 /**
  * Builder for {@link MacroDefinition}.
  */
-public class MacroBuilder{
+public final class MacroBuilder{
 	private final String name;
 	private final MacroType type;
 	private final List<MacroParameter> parameters = new ArrayList<>();
