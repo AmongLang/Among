@@ -21,35 +21,6 @@ import java.util.Objects;
  */
 public class AmongEngine{
 	/**
-	 * If enabled, any single-element, unnamed operations will be 'collapsed'; that is, being replaced with its child
-	 * element. Snipped below demonstrates compilation result with and without the option.
-	 * <pre>
-	 * // Sample code
-	 * ((x-y)/2)
-	 *
-	 * [ / [[- [x, y]], 2]]  // Raw compilation result of the code above, notice the presence of single-element lists
-	 * / [- [x, y], 2]  // Compilation result with the option turned on
-	 *
-	 *
-	 * // Multi-element operations, lists, empty operations and named operations are not affected
-	 * ((1, 2, 3) + [list] + () + fib(3))
-	 *
-	 * // Compilation result of the code above
-	 * + [
-	 *   + [
-	 *     + [
-	 *       [1, 2, 3]
-	 *       [list]
-	 *     ]
-	 *     []
-	 *   ]
-	 *   fib [3]
-	 * ]
-	 * </pre>
-	 */
-	public boolean collapseUnaryOperation = true;
-
-	/**
 	 * If enabled, duplicate properties (Multiple properties with identical key) will not produce compilation error.
 	 * Instead, any duplicate properties following the first will be ignored, and reported as warning.
 	 */

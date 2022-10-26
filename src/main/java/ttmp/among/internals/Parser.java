@@ -492,7 +492,7 @@ public final class Parser{
 			case L_BRACKET: return list(null);
 			case L_PAREN:{
 				AmongList o = oper(null);
-				return engine.collapseUnaryOperation&&!o.hasName()&&o.size()==1 ? o.get(0) : o;
+				return o.size()==1 ? o.get(0) : o;
 			}
 			default:
 				if(next.isLiteral()){
