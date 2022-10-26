@@ -5,8 +5,8 @@ import java.util.Objects;
 /**
  * Formatting option used in {@link ToPrettyString}.
  */
-public final class PrettifyOption{
-	public static final PrettifyOption DEFAULT = new PrettifyOption("  ", 2, 3, false);
+public final class ToStringOption{
+	public static final ToStringOption DEFAULT = new ToStringOption("  ", 2, 3, false);
 
 	/**
 	 * Indentation to be used.
@@ -29,7 +29,7 @@ public final class PrettifyOption{
 	 */
 	public final boolean jsonCompatibility;
 
-	public PrettifyOption(String indent, int compactObjectSize, int compactListSize, boolean jsonCompatibility){
+	public ToStringOption(String indent, int compactObjectSize, int compactListSize, boolean jsonCompatibility){
 		this.indent = Objects.requireNonNull(indent);
 		this.compactObjectSize = compactObjectSize;
 		this.compactListSize = compactListSize;
@@ -39,7 +39,7 @@ public final class PrettifyOption{
 	@Override public boolean equals(Object o){
 		if(this==o) return true;
 		if(o==null||getClass()!=o.getClass()) return false;
-		PrettifyOption that = (PrettifyOption)o;
+		ToStringOption that = (ToStringOption)o;
 		return compactObjectSize==that.compactObjectSize&&
 				compactListSize==that.compactListSize&&
 				jsonCompatibility==that.jsonCompatibility&&
@@ -50,7 +50,7 @@ public final class PrettifyOption{
 	}
 
 	@Override public String toString(){
-		return "PrettifyOption{"+
+		return "ToStringOption{"+
 				"indent='"+indent+'\''+
 				", compactObjectSize="+compactObjectSize+
 				", compactListSize="+compactListSize+

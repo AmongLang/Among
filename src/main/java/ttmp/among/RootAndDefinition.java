@@ -30,23 +30,23 @@ public final class RootAndDefinition extends ToPrettyString.Base{
 		return definition;
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		if(definition.isEmpty()){
-			if(!root.isEmpty()) root.toString(stb, option, PrettifyContext.NONE);
+			if(!root.isEmpty()) root.toString(stb, option, ToStringContext.NONE);
 		}else{
-			definition.toString(stb, option, PrettifyContext.NONE);
-			if(!root.isEmpty()) root.toString(stb.append(','), option, PrettifyContext.NONE);
+			definition.toString(stb, option, ToStringContext.NONE);
+			if(!root.isEmpty()) root.toString(stb.append(','), option, ToStringContext.NONE);
 		}
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		if(definition.isEmpty()){
-			if(!root.isEmpty()) root.toPrettyString(stb, indents, option, PrettifyContext.NONE);
+			if(!root.isEmpty()) root.toPrettyString(stb, indents, option, ToStringContext.NONE);
 		}else{
-			definition.toPrettyString(stb, indents, option, PrettifyContext.NONE);
+			definition.toPrettyString(stb, indents, option, ToStringContext.NONE);
 			if(!root.isEmpty()){
 				LiteralFormats.newlineAndIndent(stb, indents, option);
-				root.toPrettyString(stb, indents, option, PrettifyContext.NONE);
+				root.toPrettyString(stb, indents, option, ToStringContext.NONE);
 			}
 		}
 	}

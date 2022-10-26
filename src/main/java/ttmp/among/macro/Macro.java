@@ -4,12 +4,12 @@ import org.jetbrains.annotations.Nullable;
 import ttmp.among.compile.ReportType;
 import ttmp.among.TypeFlags;
 import ttmp.among.exception.Sussy;
-import ttmp.among.PrettifyContext;
+import ttmp.among.ToStringContext;
 import ttmp.among.obj.Among;
 import ttmp.among.obj.AmongList;
 import ttmp.among.obj.AmongObject;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringOption;
 import ttmp.among.ToPrettyString;
 
 import java.util.ArrayList;
@@ -235,18 +235,18 @@ public abstract class Macro extends ToPrettyString.Base{
 		}
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		stb.append(type().isFunctionMacro() ? "fn " : "macro ");
-		signatureAndParameter().toString(stb, option, PrettifyContext.NONE);
+		signatureAndParameter().toString(stb, option, ToStringContext.NONE);
 		macroBodyToString(stb.append(':'), option);
 	}
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		stb.append(type().isFunctionMacro() ? "fn " : "macro ");
-		signatureAndParameter().toPrettyString(stb, indents, option, PrettifyContext.NONE);
+		signatureAndParameter().toPrettyString(stb, indents, option, ToStringContext.NONE);
 		macroBodyToPrettyString(stb.append(" : "), indents, option);
 	}
-	protected abstract void macroBodyToString(StringBuilder stb, PrettifyOption option);
-	protected abstract void macroBodyToPrettyString(StringBuilder stb, int indents, PrettifyOption option);
+	protected abstract void macroBodyToString(StringBuilder stb, ToStringOption option);
+	protected abstract void macroBodyToPrettyString(StringBuilder stb, int indents, ToStringOption option);
 
 	public ToPrettyString signatureAndParameter(){
 		return signatureAndParameter(false);
@@ -254,9 +254,9 @@ public abstract class Macro extends ToPrettyString.Base{
 	public ToPrettyString signatureAndParameter(boolean replaceDefaultValueWithStubs){
 		return new ToPrettyString(){
 			@Override public String toString(){
-				return toString(PrettifyOption.DEFAULT);
+				return toString(ToStringOption.DEFAULT);
 			}
-			@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+			@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 				if(LiteralFormats.isSimpleMacroName(name())) LiteralFormats.simpleMacroNameToString(stb, name());
 				else LiteralFormats.primitiveToString(stb, name());
 				switch(type()){
@@ -265,14 +265,14 @@ public abstract class Macro extends ToPrettyString.Base{
 					case OPERATION: case OPERATION_FN: stb.append('('); break;
 					default: return;
 				}
-				parameter.toString(stb, option, PrettifyContext.NONE);
+				parameter.toString(stb, option, ToStringContext.NONE);
 				switch(type()){
 					case OBJECT: case OBJECT_FN: stb.append('}'); break;
 					case LIST: case LIST_FN: stb.append(']'); break;
 					case OPERATION: case OPERATION_FN: stb.append(')'); break;
 				}
 			}
-			@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+			@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 				if(LiteralFormats.isSimpleMacroName(name())) LiteralFormats.simpleMacroNameToString(stb, name());
 				else LiteralFormats.primitiveToPrettyString(stb, name(), indents, option);
 				switch(type()){

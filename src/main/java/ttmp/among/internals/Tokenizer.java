@@ -3,7 +3,7 @@ package ttmp.among.internals;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.compile.ReportType;
 import ttmp.among.compile.Source;
-import ttmp.among.internals.AmongToken.TokenType;
+import ttmp.among.internals.Token.TokenType;
 import ttmp.among.operator.OperatorRegistry.NameGroup;
 import ttmp.among.ErrorHandling;
 
@@ -15,27 +15,27 @@ import java.util.Set;
 import static ttmp.among.compile.Source.EOF;
 
 /**
- * Object responsible for converting raw source strings into list of {@link AmongToken}s.<br>
+ * Object responsible for converting raw source strings into list of {@link Token}s.<br>
  * The tokenization process is mode dependant - same input might produce different result depending on the mode.
  * To compensate for the possible ambiguity of the compilation, a rudimentary 'setback' functionality is included,
  * which act as a kind of lookahead. (ok i know these ramblings sounded absolutely fucking terrible but its my child ok
  * dont be a dick and move on)
  *
- * @see AmongToken
+ * @see Token
  * @see TokenizationMode
  */
-public final class AmongTokenizer{
+public final class Tokenizer{
 	private final Source source;
-	private final AmongParser parser;
+	private final Parser parser;
 
 	private int srcIndex;
 
-	private final List<AmongToken> tokens = new ArrayList<>();
+	private final List<Token> tokens = new ArrayList<>();
 	private int tokenIndex;
 	private int lastSrcIndex;
 	private int lastTokensLeft;
 
-	public AmongTokenizer(Source source, AmongParser parser){
+	public Tokenizer(Source source, Parser parser){
 		this.source = source;
 		this.parser = parser;
 	}
@@ -51,32 +51,32 @@ public final class AmongTokenizer{
 	 * @param mode          Mode for interpreting literal expressions.
 	 * @return The next token
 	 */
-	public AmongToken next(boolean skipLineBreak, TokenizationMode mode){
+	public Token next(boolean skipLineBreak, TokenizationMode mode){
 		while(true){
-			AmongToken token = advance(mode);
+			Token token = advance(mode);
 			if(!skipLineBreak||token.type!=TokenType.BR) return token;
 		}
 	}
 
 	/**
-	 * @return Last token read and returned with {@link AmongTokenizer#next(boolean, TokenizationMode) next()},
-	 * or {@code null} if there isn't one (because either {@link AmongTokenizer#reset(boolean) reset()} was called or
+	 * @return Last token read and returned with {@link Tokenizer#next(boolean, TokenizationMode) next()},
+	 * or {@code null} if there isn't one (because either {@link Tokenizer#reset(boolean) reset()} was called or
 	 * nothing was read yet)
 	 */
-	@Nullable public AmongToken lastToken(){
+	@Nullable public Token lastToken(){
 		return lastToken;
 	}
 
-	@Nullable private AmongToken lastToken;
+	@Nullable private Token lastToken;
 
 	/**
 	 * Advances token index; Returns EOF if it's already at the end.
 	 */
-	private AmongToken advance(TokenizationMode mode){
+	private Token advance(TokenizationMode mode){
 		if(tokenIndex>=tokens.size()){
 			read(mode);
 			if(tokenIndex>=tokens.size())
-				return lastToken = new AmongToken(TokenType.EOF, srcIndex);
+				return lastToken = new Token(TokenType.EOF, srcIndex);
 		}
 		return lastToken = tokens.get(tokenIndex++);
 	}
@@ -121,52 +121,52 @@ public final class AmongTokenizer{
 				case EOF: return;
 				case ' ': case '\t': continue;
 				case '\n':
-					tokens.add(new AmongToken(TokenType.BR, idx));
+					tokens.add(new Token(TokenType.BR, idx));
 					return;
 				case '(':
 					if(mode==TokenizationMode.KEY) break;
-					tokens.add(new AmongToken(TokenType.L_PAREN, idx));
+					tokens.add(new Token(TokenType.L_PAREN, idx));
 					return;
 				case ')':
 					if(mode==TokenizationMode.KEY) break;
-					tokens.add(new AmongToken(TokenType.R_PAREN, idx));
+					tokens.add(new Token(TokenType.R_PAREN, idx));
 					return;
 				case '{':
-					tokens.add(new AmongToken(TokenType.L_BRACE, idx));
+					tokens.add(new Token(TokenType.L_BRACE, idx));
 					return;
 				case '}':
-					tokens.add(new AmongToken(TokenType.R_BRACE, idx));
+					tokens.add(new Token(TokenType.R_BRACE, idx));
 					return;
 				case '[':
 					if(mode==TokenizationMode.KEY) break;
-					tokens.add(new AmongToken(TokenType.L_BRACKET, idx));
+					tokens.add(new Token(TokenType.L_BRACKET, idx));
 					return;
 				case ']':
 					if(mode==TokenizationMode.KEY) break;
-					tokens.add(new AmongToken(TokenType.R_BRACKET, idx));
+					tokens.add(new Token(TokenType.R_BRACKET, idx));
 					return;
 				case ':':
 					if(mode.emitsColon()){
-						tokens.add(new AmongToken(TokenType.COLON, idx));
+						tokens.add(new Token(TokenType.COLON, idx));
 						return;
 					}else break;
 				case ',':
-					tokens.add(new AmongToken(TokenType.COMMA, idx));
+					tokens.add(new Token(TokenType.COMMA, idx));
 					return;
 				case '\'':
-					tokens.add(new AmongToken(TokenType.QUOTED_PRIMITIVE, idx, primitive('\'')));
+					tokens.add(new Token(TokenType.QUOTED_PRIMITIVE, idx, primitive('\'')));
 					return;
 				case '"':
-					tokens.add(new AmongToken(TokenType.QUOTED_PRIMITIVE, idx, primitive('"')));
+					tokens.add(new Token(TokenType.QUOTED_PRIMITIVE, idx, primitive('"')));
 					return;
 				case '=':
 					if(mode==TokenizationMode.PARAM_NAME){
-						tokens.add(new AmongToken(TokenType.EQ, idx));
+						tokens.add(new Token(TokenType.EQ, idx));
 						return;
 					}
 			}
 			if(mode==TokenizationMode.UNEXPECTED){
-				tokens.add(new AmongToken(TokenType.ERROR, idx));
+				tokens.add(new Token(TokenType.ERROR, idx));
 				return;
 			}
 			srcIndex = idx;
@@ -216,7 +216,7 @@ public final class AmongTokenizer{
 		}
 	}
 
-	private AmongToken word(boolean plain, boolean paramName){
+	private Token word(boolean plain, boolean paramName){
 		boolean isPlain = plain;
 		StringBuilder stb = new StringBuilder();
 		int start = srcIndex;
@@ -243,12 +243,12 @@ public final class AmongTokenizer{
 			stb.appendCodePoint(c);
 		}
 		srcIndex = prev;
-		return new AmongToken(
+		return new Token(
 				paramName ? TokenType.PARAM_NAME : isPlain ? TokenType.PLAIN_WORD : TokenType.WORD,
 				start, stb.toString());
 	}
 
-	private AmongToken multipleWords(boolean key, boolean macroName){
+	private Token multipleWords(boolean key, boolean macroName){
 		StringBuilder stb = new StringBuilder();
 		int start = srcIndex;
 		int lastNonWhitespaceSeen = srcIndex;
@@ -271,7 +271,7 @@ public final class AmongTokenizer{
 			lastNonWhitespaceSeen = srcIndex;
 		}
 		srcIndex = prev;
-		return new AmongToken(
+		return new Token(
 				key ? TokenType.KEY : macroName ? TokenType.MACRO_NAME : TokenType.VALUE,
 				start, stb.toString());
 	}
@@ -295,7 +295,7 @@ public final class AmongTokenizer{
 			NameGroup operator = match(false);
 			if(operator!=null){
 				addOperationTokens(keyword, start, stb);
-				tokens.add(new AmongToken(TokenType.OPERATOR, prev, operator.name()));
+				tokens.add(new Token(TokenType.OPERATOR, prev, operator.name()));
 				return;
 			}
 			if(keyword!=null){
@@ -310,8 +310,8 @@ public final class AmongTokenizer{
 
 	private void addOperationTokens(@Nullable NameGroup keyword, int start,
 	                                StringBuilder stb){
-		if(keyword!=null) tokens.add(new AmongToken(TokenType.KEYWORD, start, keyword.name()));
-		else if(stb.length()>0) tokens.add(new AmongToken(TokenType.WORD, start, stb.toString()));
+		if(keyword!=null) tokens.add(new Token(TokenType.KEYWORD, start, keyword.name()));
+		else if(stb.length()>0) tokens.add(new Token(TokenType.WORD, start, stb.toString()));
 	}
 
 	@Nullable private NameGroup match(boolean keyword){
@@ -381,7 +381,7 @@ public final class AmongTokenizer{
 									NameGroup operator = match(false);
 									if(operator!=null){
 										addNumber(numberStart, prev2);
-										tokens.add(new AmongToken(TokenType.OPERATOR, prev2, operator.name()));
+										tokens.add(new Token(TokenType.OPERATOR, prev2, operator.name()));
 										return true;
 									}
 								}
@@ -394,7 +394,7 @@ public final class AmongTokenizer{
 					NameGroup operator = match(false);
 					if(operator!=null){
 						addNumber(numberStart, prev);
-						tokens.add(new AmongToken(TokenType.OPERATOR, prev, operator.name()));
+						tokens.add(new Token(TokenType.OPERATOR, prev, operator.name()));
 						return true;
 					}else{
 						srcIndex = start;
@@ -410,7 +410,7 @@ public final class AmongTokenizer{
 		StringBuilder stb = new StringBuilder();
 		while(srcIndex<numberEndExclusive)
 			stb.appendCodePoint(nextLiteralChar());
-		tokens.add(new AmongToken(TokenType.NUMBER, numberStartInclusive, stb.toString()));
+		tokens.add(new Token(TokenType.NUMBER, numberStartInclusive, stb.toString()));
 		srcIndex = cache;
 	}
 

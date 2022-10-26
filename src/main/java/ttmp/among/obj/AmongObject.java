@@ -3,8 +3,8 @@ package ttmp.among.obj;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.AmongWalker;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.NodePath;
 
 import java.util.Collections;
@@ -179,7 +179,7 @@ public class AmongObject extends AmongNameable{
 		return Objects.hash(getName(), properties);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		nameToString(stb, option, context);
 		if(isEmpty()) stb.append("{}");
 		else{
@@ -192,13 +192,13 @@ public class AmongObject extends AmongNameable{
 					LiteralFormats.simpleKeyToString(stb, e.getKey(), false);
 				else LiteralFormats.primitiveToString(stb, e.getKey());
 				stb.append(':');
-				e.getValue().toString(stb, option, PrettifyContext.NONE);
+				e.getValue().toString(stb, option, ToStringContext.NONE);
 			}
 			stb.append('}');
 		}
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		nameToPrettyString(stb, indents, option, context);
 		if(hasName()) stb.append(' ');
 		if(isEmpty()) stb.append("{}");
@@ -220,7 +220,7 @@ public class AmongObject extends AmongNameable{
 				if(!option.jsonCompatibility&&LiteralFormats.isSimpleKey(e.getKey()))
 					LiteralFormats.simpleKeyToString(stb, e.getKey(), false);
 				else LiteralFormats.primitiveToPrettyString(stb, e.getKey(), isCompact ? indents : indents+1, option);
-				e.getValue().toPrettyString(stb.append(": "), isCompact ? indents : indents+1, option, PrettifyContext.NONE);
+				e.getValue().toPrettyString(stb.append(": "), isCompact ? indents : indents+1, option, ToStringContext.NONE);
 			}
 			if(!isCompact) LiteralFormats.newlineAndIndent(stb, indents, option);
 			else stb.append(' ');

@@ -3,8 +3,8 @@ package ttmp.among.macro;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.ToPrettyString;
 import ttmp.among.obj.Among;
 
@@ -58,23 +58,23 @@ public final class MacroParameter extends ToPrettyString.Base implements Compara
 		return Objects.hash(name(), defaultValue());
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		LiteralFormats.paramToString(stb, name());
 		if(defaultValue()!=null)
-			defaultValue().toString(stb.append('='), option, PrettifyContext.NONE);
+			defaultValue().toString(stb.append('='), option, ToStringContext.NONE);
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		toPrettyString(stb, indents, option, false);
 	}
 
-	public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, boolean replaceDefaultValueWithStubs){
+	public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, boolean replaceDefaultValueWithStubs){
 		LiteralFormats.paramToString(stb, name());
 		if(defaultValue()!=null){
 			if(replaceDefaultValueWithStubs){
 				stb.append(" = /* default */");
 			}else{
-				defaultValue().toPrettyString(stb.append(" = "), indents+1, option, PrettifyContext.NONE);
+				defaultValue().toPrettyString(stb.append(" = "), indents+1, option, ToStringContext.NONE);
 			}
 		}
 	}

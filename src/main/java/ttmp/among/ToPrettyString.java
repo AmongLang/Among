@@ -6,7 +6,7 @@ import ttmp.among.compile.Source;
  * Base type for objects providing pretty formatting. Most of Among related objects will yield re-compilable script which
  * will produce identical copy of them once read with {@link AmongEngine#read(Source)}.<br>
  * All instances implementing this interface is expected to override {@link Object#toString()} to call
- * {@link ToPrettyString#toString(PrettifyOption)} with option of {@link PrettifyOption#DEFAULT}.
+ * {@link ToPrettyString#toString(ToStringOption)} with option of {@link ToStringOption#DEFAULT}.
  */
 public interface ToPrettyString{
 	/**
@@ -15,8 +15,8 @@ public interface ToPrettyString{
 	 * @param option Option to use
 	 * @return String representation of this object
 	 */
-	default String toString(PrettifyOption option){
-		return toString(option, PrettifyContext.NONE);
+	default String toString(ToStringOption option){
+		return toString(option, ToStringContext.NONE);
 	}
 	/**
 	 * Returns a string representation of this object, formatted in most compact form.
@@ -25,7 +25,7 @@ public interface ToPrettyString{
 	 * @param context Context of the formatting
 	 * @return String representation of this object
 	 */
-	default String toString(PrettifyOption option, PrettifyContext context){
+	default String toString(ToStringOption option, ToStringContext context){
 		StringBuilder stb = new StringBuilder();
 		toString(stb, option, context);
 		return stb.toString();
@@ -37,17 +37,17 @@ public interface ToPrettyString{
 	 * @param option  Option to use
 	 * @param context Context of the formatting
 	 */
-	void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context);
+	void toString(StringBuilder stb, ToStringOption option, ToStringContext context);
 
 	/**
 	 * Returns a string representation of this object, formatted in human-readable form. Default format option will be
 	 * used.
 	 *
 	 * @return String representation of this object
-	 * @see ToPrettyString#toPrettyString(int, PrettifyOption, PrettifyContext)
+	 * @see ToPrettyString#toPrettyString(int, ToStringOption, ToStringContext)
 	 */
 	default String toPrettyString(){
-		return toPrettyString(0, PrettifyOption.DEFAULT);
+		return toPrettyString(0, ToStringOption.DEFAULT);
 	}
 
 	/**
@@ -56,10 +56,10 @@ public interface ToPrettyString{
 	 *
 	 * @param indents Number of indentations
 	 * @return String representation of this object
-	 * @see ToPrettyString#toPrettyString(int, PrettifyOption, PrettifyContext)
+	 * @see ToPrettyString#toPrettyString(int, ToStringOption, ToStringContext)
 	 */
 	default String toPrettyString(int indents){
-		return toPrettyString(indents, PrettifyOption.DEFAULT);
+		return toPrettyString(indents, ToStringOption.DEFAULT);
 	}
 
 	/**
@@ -68,9 +68,9 @@ public interface ToPrettyString{
 	 *
 	 * @param option Option to use
 	 * @return String representation of this object
-	 * @see ToPrettyString#toPrettyString(int, PrettifyOption, PrettifyContext)
+	 * @see ToPrettyString#toPrettyString(int, ToStringOption, ToStringContext)
 	 */
-	default String toPrettyString(PrettifyOption option){
+	default String toPrettyString(ToStringOption option){
 		return toPrettyString(0, option);
 	}
 
@@ -81,8 +81,8 @@ public interface ToPrettyString{
 	 * @param option  Option to use
 	 * @return String representation of this object
 	 */
-	default String toPrettyString(int indents, PrettifyOption option){
-		return toPrettyString(indents, option, PrettifyContext.NONE);
+	default String toPrettyString(int indents, ToStringOption option){
+		return toPrettyString(indents, option, ToStringContext.NONE);
 	}
 
 	/**
@@ -93,7 +93,7 @@ public interface ToPrettyString{
 	 * @param context Context of the formatting
 	 * @return String representation of this object
 	 */
-	default String toPrettyString(int indents, PrettifyOption option, PrettifyContext context){
+	default String toPrettyString(int indents, ToStringOption option, ToStringContext context){
 		StringBuilder stb = new StringBuilder();
 		toPrettyString(stb, indents, option, context);
 		return stb.toString();
@@ -107,14 +107,14 @@ public interface ToPrettyString{
 	 * @param option  Option to use
 	 * @param context Context of the formatting
 	 */
-	void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context);
+	void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context);
 
 	/**
 	 * 'Base implementation' of {@link ToPrettyString}. (which means just overriding {@link Object#toString()})
 	 */
 	abstract class Base implements ToPrettyString{
 		@Override public final String toString(){
-			return toString(PrettifyOption.DEFAULT);
+			return toString(ToStringOption.DEFAULT);
 		}
 	}
 }

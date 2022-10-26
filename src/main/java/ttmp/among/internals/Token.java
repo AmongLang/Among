@@ -7,17 +7,17 @@ import ttmp.among.operator.OperatorDefinition;
 import java.util.Objects;
 
 /**
- * Individual unit of source code, produced by {@link AmongTokenizer}.
+ * Individual unit of source code, produced by {@link Tokenizer}.
  */
-public final class AmongToken{
+public final class Token{
 	public final TokenType type;
 	public final int start;
 	public final @Nullable String literal;
 
-	public AmongToken(TokenType type, int start){
+	public Token(TokenType type, int start){
 		this(type, start, null);
 	}
-	public AmongToken(TokenType type, int start, @Nullable String literal){
+	public Token(TokenType type, int start, @Nullable String literal){
 		this.type = type;
 		this.start = start;
 		this.literal = literal;

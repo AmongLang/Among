@@ -1,7 +1,7 @@
 package ttmp.among;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.internals.AmongParser;
+import ttmp.among.internals.Parser;
 import ttmp.among.compile.CompileResult;
 import ttmp.among.compile.Source;
 import ttmp.among.macro.MacroDefinition;
@@ -149,7 +149,7 @@ public class AmongEngine{
 	 * @return Result with {@code root} (or new root if it was {@code null}) containing objects parsed from {@code source}
 	 */
 	public final CompileResult read(Source source, @Nullable AmongRoot root, @Nullable AmongDefinition importDefinition){
-		return new AmongParser(source, this,
+		return new Parser(source, this,
 				root==null ? new AmongRoot() : root,
 				importDefinition==null ? new AmongDefinition() : importDefinition)
 				.parse();

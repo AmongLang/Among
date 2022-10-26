@@ -2,8 +2,8 @@ package ttmp.among.obj;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 
 /**
  * Base class for all 'nameable' objects; i.e.
@@ -62,16 +62,16 @@ public abstract class AmongNameable extends Among{
 
 	@Override public abstract AmongNameable copy();
 
-	protected void nameToString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	protected void nameToString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		if(hasName()){
-			if(context!=PrettifyContext.OPERATION&&LiteralFormats.isSimpleValue(getName()))
+			if(context!=ToStringContext.OPERATION&&LiteralFormats.isSimpleValue(getName()))
 				LiteralFormats.simpleValueToString(stb, getName());
 			else LiteralFormats.primitiveToString(stb, getName());
 		}
 	}
-	protected void nameToPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	protected void nameToPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		if(hasName()){
-			if(context!=PrettifyContext.OPERATION&&LiteralFormats.isSimpleValue(getName()))
+			if(context!=ToStringContext.OPERATION&&LiteralFormats.isSimpleValue(getName()))
 				LiteralFormats.simpleValueToString(stb, getName());
 			else LiteralFormats.primitiveToPrettyString(stb, getName(), indents+1, option);
 		}

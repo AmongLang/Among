@@ -1,6 +1,6 @@
 package ttmp.among.internals;
 
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringOption;
 
 import java.util.regex.Pattern;
 
@@ -59,7 +59,7 @@ public final class LiteralFormats{
 		stb.append('"').append(standardReplace(PRIMITIVE_SPECIALS, primitive, true)).append('"');
 	}
 
-	public static void primitiveToPrettyString(StringBuilder stb, String primitive, int indents, PrettifyOption option){
+	public static void primitiveToPrettyString(StringBuilder stb, String primitive, int indents, ToStringOption option){
 		stb.append('"');
 		if(option.jsonCompatibility){
 			stb.append(standardReplace(PRIMITIVE_SPECIALS_JSON, primitive, true));
@@ -70,13 +70,13 @@ public final class LiteralFormats{
 		stb.append('"');
 	}
 
-	public static String newlineAndIndent(int indents, PrettifyOption option){
+	public static String newlineAndIndent(int indents, ToStringOption option){
 		StringBuilder stb = new StringBuilder();
 		newlineAndIndent(stb, indents, option);
 		return stb.toString();
 	}
 
-	public static void newlineAndIndent(StringBuilder stb, int indents, PrettifyOption option){
+	public static void newlineAndIndent(StringBuilder stb, int indents, ToStringOption option){
 		stb.append('\n');
 		for(int i = 0; i<indents; i++) stb.append(option.indent);
 	}

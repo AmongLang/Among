@@ -1,6 +1,6 @@
 package ttmp.among.internals;
 
-import ttmp.among.internals.AmongToken.TokenType;
+import ttmp.among.internals.Token.TokenType;
 
 /**
  * Mode for interpreting literal expressions.<br>
@@ -21,7 +21,7 @@ import ttmp.among.internals.AmongToken.TokenType;
  *     and literal {@code 'name'} consecutively.</li>
  * </ul>
  *
- * @see AmongTokenizer#next(boolean, TokenizationMode)
+ * @see Tokenizer#next(boolean, TokenizationMode)
  */
 public enum TokenizationMode{
 	/**

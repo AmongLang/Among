@@ -2,11 +2,11 @@ package ttmp.among.macro;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.compile.ReportType;
-import ttmp.among.PrettifyContext;
+import ttmp.among.ToStringContext;
 import ttmp.among.obj.Among;
 import ttmp.among.obj.AmongList;
 import ttmp.among.obj.AmongObject;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringOption;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -270,7 +270,7 @@ public final class MacroRegistry{
 		if(reportHandler==null) return;
 		StringBuilder stb = new StringBuilder("Ambiguous usage of macro ").append(signature).append(':');
 		for(Macro m : ambiguousMacros)
-			m.signatureAndParameter(true).toPrettyString(stb.append("\n  "), 1, PrettifyOption.DEFAULT, PrettifyContext.NONE);
+			m.signatureAndParameter(true).toPrettyString(stb.append("\n  "), 1, ToStringOption.DEFAULT, ToStringContext.NONE);
 		reportHandler.accept(ReportType.ERROR, stb.toString());
 	}
 
@@ -282,7 +282,7 @@ public final class MacroRegistry{
 		}else{
 			StringBuilder stb = new StringBuilder("Wrong usage, expected:");
 			for(Macro m : macros)
-				m.signatureAndParameter(true).toPrettyString(stb.append("\n  "), 1, PrettifyOption.DEFAULT, PrettifyContext.NONE);
+				m.signatureAndParameter(true).toPrettyString(stb.append("\n  "), 1, ToStringOption.DEFAULT, ToStringContext.NONE);
 			reportHandler.accept(ReportType.ERROR, stb.toString());
 		}
 	}
@@ -294,8 +294,8 @@ public final class MacroRegistry{
 				.append(overwrittenMacros.size()).append(" preexisting macro(s).")
 				.append("\n  Preexisting macro(s):");
 		for(Macro m : overwrittenMacros)
-			m.signatureAndParameter(true).toPrettyString(stb.append("\n    "), 2, PrettifyOption.DEFAULT, PrettifyContext.NONE);
-		newMacro.signatureAndParameter(true).toPrettyString(stb.append("\n  New macro:\n    "), 2, PrettifyOption.DEFAULT, PrettifyContext.NONE);
+			m.signatureAndParameter(true).toPrettyString(stb.append("\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
+		newMacro.signatureAndParameter(true).toPrettyString(stb.append("\n  New macro:\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
 		reportHandler.accept(ReportType.WARN, stb.toString());
 	}
 
@@ -306,8 +306,8 @@ public final class MacroRegistry{
 				.append(overlappingMacros.size()).append(" preexisting macro(s).")
 				.append("\n  Preexisting macro(s):");
 		for(Macro m : overlappingMacros)
-			m.signatureAndParameter(true).toPrettyString(stb.append("\n    "), 2, PrettifyOption.DEFAULT, PrettifyContext.NONE);
-		newMacro.signatureAndParameter(true).toPrettyString(stb.append("\n  New macro:\n    "), 2, PrettifyOption.DEFAULT, PrettifyContext.NONE);
+			m.signatureAndParameter(true).toPrettyString(stb.append("\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
+		newMacro.signatureAndParameter(true).toPrettyString(stb.append("\n  New macro:\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
 		reportHandler.accept(ReportType.INFO, stb.toString());
 	}
 }

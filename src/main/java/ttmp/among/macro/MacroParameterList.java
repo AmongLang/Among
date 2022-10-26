@@ -1,8 +1,8 @@
 package ttmp.among.macro;
 
 import ttmp.among.exception.Sussy;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.ToPrettyString;
 
 import java.util.ArrayList;
@@ -163,19 +163,19 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return Objects.hash(params);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		boolean first = true;
 		for(MacroParameter p : params){
 			if(first) first = false;
 			else stb.append(',');
-			p.toString(stb, option, PrettifyContext.NONE);
+			p.toString(stb, option, ToStringContext.NONE);
 		}
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		toPrettyString(stb, indents, option, false);
 	}
-	public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, boolean replaceDefaultValueWithStubs){
+	public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, boolean replaceDefaultValueWithStubs){
 		boolean first = true;
 		for(MacroParameter p : params){
 			if(first) first = false;

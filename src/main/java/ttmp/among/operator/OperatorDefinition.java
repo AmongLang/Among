@@ -2,8 +2,8 @@ package ttmp.among.operator;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.ToPrettyString;
 
 import java.text.DecimalFormat;
@@ -112,7 +112,7 @@ public final class OperatorDefinition extends ToPrettyString.Base{
 		return Objects.hash(name, isKeyword, type, alias, properties, priority);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		stb.append(isKeyword ? "keyword " : "operator ");
 		if(LiteralFormats.isSimpleWord(name())) LiteralFormats.simpleWordToString(stb, name());
 		else LiteralFormats.primitiveToString(stb, name());
@@ -125,7 +125,7 @@ public final class OperatorDefinition extends ToPrettyString.Base{
 			else LiteralFormats.primitiveToString(stb, alias);
 		}
 	}
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		stb.append(isKeyword ? "keyword " : "operator ");
 		if(LiteralFormats.isSimpleWord(name())) LiteralFormats.simpleWordToString(stb, name());
 		else LiteralFormats.primitiveToPrettyString(stb, name(), indents, option);

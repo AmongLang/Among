@@ -49,22 +49,22 @@ public final class AmongDefinition extends ToPrettyString.Base{
 		return new AmongDefinition(this);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		Iterator<ToPrettyString.Base> it = Stream.concat(macros.allMacros(), operators.allOperators()).iterator();
 		boolean first = true;
 		while(it.hasNext()){
 			if(first) first = false;
 			else stb.append(',');
-			it.next().toString(stb, option, PrettifyContext.NONE);
+			it.next().toString(stb, option, ToStringContext.NONE);
 		}
 	}
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		Iterator<ToPrettyString.Base> it = Stream.concat(macros.allMacros(), operators.allOperators()).iterator();
 		boolean first = true;
 		while(it.hasNext()){
 			if(first) first = false;
 			else stb.append('\n');
-			it.next().toPrettyString(stb, indents, option, PrettifyContext.NONE);
+			it.next().toPrettyString(stb, indents, option, ToStringContext.NONE);
 		}
 	}
 }

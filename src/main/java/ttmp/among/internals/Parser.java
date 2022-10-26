@@ -43,12 +43,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static ttmp.among.internals.AmongToken.TokenType.*;
+import static ttmp.among.internals.Token.TokenType.*;
 
 /**
  * Eats token. Shits object. Crazy.
  */
-public final class AmongParser{
+public final class Parser{
 	private final AmongRoot root;
 	/**
 	 * Macros and operators defined or imported with {@code use public} statement. Will be returned as compilation
@@ -60,18 +60,18 @@ public final class AmongParser{
 	 */
 	private final AmongDefinition importDefinition;
 	private final AmongEngine engine;
-	private final AmongTokenizer tokenizer;
+	private final Tokenizer tokenizer;
 	private final List<Report> reports = new ArrayList<>();
 
 	private boolean recovering;
 	@Nullable private ParsingMacro currentMacro;
 
-	public AmongParser(Source source, AmongEngine engine, AmongRoot root, AmongDefinition importDefinition){
+	public Parser(Source source, AmongEngine engine, AmongRoot root, AmongDefinition importDefinition){
 		this.engine = engine;
 		this.root = root;
 		this.definition = new AmongDefinition();
 		this.importDefinition = importDefinition;
-		this.tokenizer = new AmongTokenizer(source, this);
+		this.tokenizer = new Tokenizer(source, this);
 	}
 
 	public AmongEngine engine(){
@@ -93,7 +93,7 @@ public final class AmongParser{
 	private void among(){
 		while(true){
 			tokenizer.discard();
-			AmongToken next = tokenizer.next(true, TokenizationMode.PLAIN_WORD);
+			Token next = tokenizer.next(true, TokenizationMode.PLAIN_WORD);
 			if(next.is(EOF)) return;
 			switch(next.keywordOrEmpty()){
 				case "macro": macroDefinition(false, next.start); continue;
@@ -158,7 +158,7 @@ public final class AmongParser{
 	 */
 	private boolean stmtEnd(){
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(false, TokenizationMode.UNEXPECTED);
+		Token next = tokenizer.next(false, TokenizationMode.UNEXPECTED);
 		switch(next.type){
 			case BR:
 				tokenizer.discard();
@@ -171,7 +171,7 @@ public final class AmongParser{
 
 	@Nullable private String definitionName(TokenizationMode mode){
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(true, mode);
+		Token next = tokenizer.next(true, mode);
 		if(!next.isLiteral()){
 			reportError("Expected name");
 			tokenizer.reset();
@@ -224,9 +224,9 @@ public final class AmongParser{
 		this.currentMacro = null;
 	}
 
-	private void macroParam(ParsingMacro macro, AmongToken.TokenType closure){
+	private void macroParam(ParsingMacro macro, Token.TokenType closure){
 		while(true){
-			AmongToken next = tokenizer.next(true, TokenizationMode.PARAM_NAME);
+			Token next = tokenizer.next(true, TokenizationMode.PARAM_NAME);
 			if(next.is(closure)) break;
 			if(next.is(EOF)) break; // It will be reported in defMacro()
 			if(!next.is(PARAM_NAME)){
@@ -270,7 +270,7 @@ public final class AmongParser{
 			if(p!=null) list.add(p);
 			else invalid = true;
 			tokenizer.discard();
-			AmongToken next = tokenizer.next(true, TokenizationMode.PLAIN_WORD);
+			Token next = tokenizer.next(true, TokenizationMode.PLAIN_WORD);
 			if(next.is(PLAIN_WORD, "and")) continue;
 			String alias;
 			if(next.is(COLON)){
@@ -310,7 +310,7 @@ public final class AmongParser{
 			tokenizer.discard();
 			OperatorType t = null;
 			OperatorPropertyEnum e = null;
-			AmongToken next = tokenizer.next(false, TokenizationMode.PLAIN_WORD);
+			Token next = tokenizer.next(false, TokenizationMode.PLAIN_WORD);
 			switch(next.keywordOrEmpty()){
 				case "binary": t = OperatorType.BINARY; break;
 				case "prefix": t = OperatorType.PREFIX; break;
@@ -377,7 +377,7 @@ public final class AmongParser{
 		String name = definitionName(TokenizationMode.MACRO_NAME);
 		if(name==null) return;
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(false, TokenizationMode.PLAIN_WORD);
+		Token next = tokenizer.next(false, TokenizationMode.PLAIN_WORD);
 		MacroType type;
 		switch(next.type){
 			case BR: case EOF: case COMMA: tokenizer.reset(); type = fn ? MacroType.ACCESS : MacroType.CONST; break;
@@ -401,7 +401,7 @@ public final class AmongParser{
 	}
 
 	private void undefUse(){
-		AmongToken next = tokenizer.next(false, TokenizationMode.VALUE);
+		Token next = tokenizer.next(false, TokenizationMode.VALUE);
 		if(!next.isLiteral()){
 			reportError("Expected path");
 			tryToRecover(TokenizationMode.UNEXPECTED, null, true, true);
@@ -425,7 +425,7 @@ public final class AmongParser{
 
 	private void use(int startIndex){
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(false, TokenizationMode.PLAIN_WORD);
+		Token next = tokenizer.next(false, TokenizationMode.PLAIN_WORD);
 		boolean pub = next.keywordOrEmpty().equals("public");
 		if(!pub) tokenizer.reset(true);
 		next = tokenizer.next(false, TokenizationMode.VALUE);
@@ -454,7 +454,7 @@ public final class AmongParser{
 		});
 	}
 
-	private void expectNext(AmongToken.TokenType type){
+	private void expectNext(Token.TokenType type){
 		if(!tokenizer.next(true, TokenizationMode.UNEXPECTED).is(type)){
 			reportError("Expected "+type);
 			tryToRecover(TokenizationMode.UNEXPECTED, type, false, false);
@@ -470,7 +470,7 @@ public final class AmongParser{
 		Among a = nameable(false);
 		if(a!=null) return a;
 		tokenizer.reset(true);
-		AmongToken next = tokenizer.next(true, TokenizationMode.VALUE);
+		Token next = tokenizer.next(true, TokenizationMode.VALUE);
 		if(!next.isLiteral()){
 			reportError("Expected value");
 			tokenizer.reset(true);
@@ -486,7 +486,7 @@ public final class AmongParser{
 
 	@Nullable private Among nameable(boolean operation){
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(true, operation ? TokenizationMode.OPERATION : TokenizationMode.VALUE);
+		Token next = tokenizer.next(true, operation ? TokenizationMode.OPERATION : TokenizationMode.VALUE);
 		switch(next.type){
 			case L_BRACE: return obj(null);
 			case L_BRACKET: return list(null);
@@ -522,7 +522,7 @@ public final class AmongParser{
 		AmongObject object = Among.namedObject(name);
 		L:
 		while(true){
-			AmongToken keyToken = tokenizer.next(true, TokenizationMode.KEY);
+			Token keyToken = tokenizer.next(true, TokenizationMode.KEY);
 			switch(keyToken.type){
 				case EOF: reportError("Unterminated object");
 				case R_BRACE: break L;
@@ -549,12 +549,12 @@ public final class AmongParser{
 			Among expr = exprOrError();
 
 			if(!object.hasProperty(key)) object.setProperty(key, expr);
-			AmongToken next = tokenizer.next(false, TokenizationMode.UNEXPECTED);
+			Token next = tokenizer.next(false, TokenizationMode.UNEXPECTED);
 			switch(next.type){
 				case BR:
 					tokenizer.discard();
 					next = tokenizer.next(true, TokenizationMode.KEY);
-					if(!next.is(AmongToken.TokenType.COMMA)) tokenizer.reset();
+					if(!next.is(Token.TokenType.COMMA)) tokenizer.reset();
 					break;
 				case COMMA: break;
 				case EOF: reportError("Unterminated object");
@@ -572,7 +572,7 @@ public final class AmongParser{
 		L:
 		while(true){
 			tokenizer.discard();
-			AmongToken next = tokenizer.next(true, TokenizationMode.UNEXPECTED);
+			Token next = tokenizer.next(true, TokenizationMode.UNEXPECTED);
 			switch(next.type){
 				case EOF: reportError("Unterminated list");
 				case R_BRACKET: break L;
@@ -586,7 +586,7 @@ public final class AmongParser{
 				case BR:
 					tokenizer.discard();
 					next = tokenizer.next(true, TokenizationMode.UNEXPECTED);
-					if(!next.is(AmongToken.TokenType.COMMA))
+					if(!next.is(Token.TokenType.COMMA))
 						tokenizer.reset(next.is(ERROR));
 					break;
 				case COMMA: break;
@@ -641,7 +641,7 @@ public final class AmongParser{
 		Among a = nameable(true);
 		if(a!=null) return a;
 		tokenizer.reset();
-		AmongToken next = tokenizer.next(true, TokenizationMode.OPERATION);
+		Token next = tokenizer.next(true, TokenizationMode.OPERATION);
 		if(!next.isLiteral()){
 			reportError("Expected value");
 			tokenizer.reset();
@@ -657,7 +657,7 @@ public final class AmongParser{
 		Among a = operationExpression(operators, i+1);
 		while(true){
 			tokenizer.discard();
-			AmongToken next = tokenizer.next(true, TokenizationMode.OPERATION);
+			Token next = tokenizer.next(true, TokenizationMode.OPERATION);
 			if(next.isOperatorOrKeyword()){
 				OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 				if(op!=null){
@@ -689,7 +689,7 @@ public final class AmongParser{
 	private Among rightAssociativeBinary(List<OperatorRegistry.PriorityGroup> operators, int i){
 		Among a = operationExpression(operators, i+1);
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(true, TokenizationMode.OPERATION);
+		Token next = tokenizer.next(true, TokenizationMode.OPERATION);
 		if(next.isOperatorOrKeyword()){
 			OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 			if(op!=null){
@@ -706,7 +706,7 @@ public final class AmongParser{
 		Among a = operationExpression(operators, i+1);
 		while(true){
 			tokenizer.discard();
-			AmongToken next = tokenizer.next(true, TokenizationMode.OPERATION);
+			Token next = tokenizer.next(true, TokenizationMode.OPERATION);
 			if(next.isOperatorOrKeyword()){
 				OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 				if(op!=null){
@@ -723,7 +723,7 @@ public final class AmongParser{
 
 	private Among prefix(List<OperatorRegistry.PriorityGroup> operators, int i){
 		tokenizer.discard();
-		AmongToken next = tokenizer.next(true, TokenizationMode.OPERATION);
+		Token next = tokenizer.next(true, TokenizationMode.OPERATION);
 		if(next.isOperatorOrKeyword()){
 			OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 			if(op!=null){
@@ -806,7 +806,7 @@ public final class AmongParser{
 	}
 
 	void report(ReportType type, String message, @Nullable Throwable ex, String... hints){
-		AmongToken lastToken = tokenizer.lastToken();
+		Token lastToken = tokenizer.lastToken();
 		report(type, message, lastToken!=null ? lastToken.start : -1, ex, hints);
 	}
 	void report(ReportType type, String message, int srcIndex, @Nullable Throwable ex, String... hints){
@@ -839,7 +839,7 @@ public final class AmongParser{
 	 * @param returnOnComma This method return on comma if the value is {@code true}
 	 * @return Whether it found the closure or not
 	 */
-	private boolean tryToRecover(TokenizationMode mode, @Nullable AmongToken.TokenType closure, boolean returnOnComma){
+	private boolean tryToRecover(TokenizationMode mode, @Nullable Token.TokenType closure, boolean returnOnComma){
 		return tryToRecover(mode, closure, returnOnComma, true);
 	}
 	/**
@@ -852,12 +852,12 @@ public final class AmongParser{
 	 * @param returnOnLineBreak Returns on line break if the value is {@code true}
 	 * @return Whether it found the closure or not
 	 */
-	private boolean tryToRecover(TokenizationMode mode, @Nullable AmongToken.TokenType closure, boolean returnOnComma, boolean returnOnLineBreak){
+	private boolean tryToRecover(TokenizationMode mode, @Nullable Token.TokenType closure, boolean returnOnComma, boolean returnOnLineBreak){
 		boolean prevRecovering = this.recovering;
 		this.recovering = true;
 		while(true){
 			tokenizer.discard();
-			AmongToken.TokenType t = tokenizer.next(false, mode).type;
+			Token.TokenType t = tokenizer.next(false, mode).type;
 			switch(t){
 				case BR: if(!returnOnLineBreak) continue;
 				case EOF: this.recovering = prevRecovering; return false; // continue from here (well, there might not be much to do if it's EOF lmao)

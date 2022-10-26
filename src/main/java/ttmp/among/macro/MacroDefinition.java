@@ -3,8 +3,8 @@ package ttmp.among.macro;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.compile.ReportType;
 import ttmp.among.exception.Sussy;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.ToPrettyString;
 import ttmp.among.obj.Among;
 
@@ -23,7 +23,7 @@ import java.util.function.BiConsumer;
  * </pre>
  * <p>
  * Note that, due to the nature of replacement operations, the results of {@link MacroDefinition#toString()}
- * and {@link ToPrettyString#toPrettyString(int, PrettifyOption, PrettifyContext)} might not produce re-compilable macro script.
+ * and {@link ToPrettyString#toPrettyString(int, ToStringOption, ToStringContext)} might not produce re-compilable macro script.
  */
 public final class MacroDefinition extends Macro{
 	private final Among template;
@@ -86,10 +86,10 @@ public final class MacroDefinition extends Macro{
 		return Objects.hash(signature(), parameter(), template);
 	}
 
-	@Override protected void macroBodyToString(StringBuilder stb, PrettifyOption option){
-		template.toString(stb, option, PrettifyContext.NONE);
+	@Override protected void macroBodyToString(StringBuilder stb, ToStringOption option){
+		template.toString(stb, option, ToStringContext.NONE);
 	}
-	@Override protected void macroBodyToPrettyString(StringBuilder stb, int indents, PrettifyOption option){
-		template.toPrettyString(stb, indents, option, PrettifyContext.NONE);
+	@Override protected void macroBodyToPrettyString(StringBuilder stb, int indents, ToStringOption option){
+		template.toPrettyString(stb, indents, option, ToStringContext.NONE);
 	}
 }

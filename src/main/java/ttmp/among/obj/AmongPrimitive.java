@@ -3,8 +3,8 @@ package ttmp.among.obj;
 import ttmp.among.AmongWalker;
 import ttmp.among.exception.Sussy;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.NodePath;
 
 import java.util.Objects;
@@ -152,14 +152,14 @@ public class AmongPrimitive extends Among{
 		return Objects.hash(value);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
-		boolean useQuote = context!=PrettifyContext.NONE||!LiteralFormats.isSimpleValue(getValue())||option.jsonCompatibility;
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
+		boolean useQuote = context!=ToStringContext.NONE||!LiteralFormats.isSimpleValue(getValue())||option.jsonCompatibility;
 		if(useQuote) LiteralFormats.primitiveToString(stb, getValue());
 		else LiteralFormats.simpleValueToString(stb, getValue());
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
-		boolean useQuote = context!=PrettifyContext.NONE||!LiteralFormats.isSimpleValue(getValue())||option.jsonCompatibility;
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
+		boolean useQuote = context!=ToStringContext.NONE||!LiteralFormats.isSimpleValue(getValue())||option.jsonCompatibility;
 		if(useQuote) LiteralFormats.primitiveToPrettyString(stb, getValue(), indents, option);
 		else LiteralFormats.simpleValueToString(stb, getValue());
 	}

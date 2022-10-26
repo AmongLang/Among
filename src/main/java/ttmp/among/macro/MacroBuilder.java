@@ -4,7 +4,7 @@ import org.jetbrains.annotations.Nullable;
 import ttmp.among.compile.ReportType;
 import ttmp.among.TypeFlags;
 import ttmp.among.exception.Sussy;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringOption;
 import ttmp.among.obj.Among;
 
 import java.util.ArrayList;
@@ -144,10 +144,10 @@ public final class MacroBuilder{
 		@Override @Nullable protected Among applyMacro(Among[] args, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
 			return function.applyMacro(args, copyConstant, reportHandler);
 		}
-		@Override protected void macroBodyToString(StringBuilder stb, PrettifyOption option){
+		@Override protected void macroBodyToString(StringBuilder stb, ToStringOption option){
 			stb.append("Stub");
 		}
-		@Override protected void macroBodyToPrettyString(StringBuilder stb, int indents, PrettifyOption option){
+		@Override protected void macroBodyToPrettyString(StringBuilder stb, int indents, ToStringOption option){
 			stb.append("Stub /*code-defined macro*/");
 		}
 	}

@@ -69,19 +69,19 @@ public final class AmongRoot extends ToPrettyString.Base{
 		return new AmongRoot(this);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		if(objects.isEmpty()) return;
 		for(Among object : objects){
-			object.toString(stb, option, PrettifyContext.ROOT);
+			object.toString(stb, option, ToStringContext.ROOT);
 		}
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		boolean first = true;
 		for(Among object : objects){
 			if(first) first = false;
 			else stb.append('\n');
-			object.toPrettyString(stb, indents, option, PrettifyContext.ROOT);
+			object.toPrettyString(stb, indents, option, ToStringContext.ROOT);
 		}
 	}
 }

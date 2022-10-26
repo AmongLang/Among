@@ -3,8 +3,8 @@ package ttmp.among.obj;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.AmongWalker;
 import ttmp.among.internals.LiteralFormats;
-import ttmp.among.PrettifyContext;
-import ttmp.among.PrettifyOption;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.NodePath;
 
 import java.util.ArrayList;
@@ -147,7 +147,7 @@ public class AmongList extends AmongNameable implements Iterable<Among>{
 		return Objects.hash(getName(), values);
 	}
 
-	@Override public void toString(StringBuilder stb, PrettifyOption option, PrettifyContext context){
+	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		nameToString(stb, option, context);
 		boolean operation = this.operation&&!option.jsonCompatibility;
 		if(isEmpty()) stb.append(operation ? "()" : "[]");
@@ -155,13 +155,13 @@ public class AmongList extends AmongNameable implements Iterable<Among>{
 			stb.append(operation ? '(' : '[');
 			for(int i = 0; i<values.size(); i++){
 				if(i>0) stb.append(",");
-				values.get(i).toString(stb, option, operation ? PrettifyContext.OPERATION : PrettifyContext.NONE);
+				values.get(i).toString(stb, option, operation ? ToStringContext.OPERATION : ToStringContext.NONE);
 			}
 			stb.append(operation ? ')' : ']');
 		}
 	}
 
-	@Override public void toPrettyString(StringBuilder stb, int indents, PrettifyOption option, PrettifyContext context){
+	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		nameToPrettyString(stb, indents, option, context);
 		if(hasName()) stb.append(' ');
 		boolean operation = this.operation&&!option.jsonCompatibility;
@@ -175,7 +175,7 @@ public class AmongList extends AmongNameable implements Iterable<Among>{
 					LiteralFormats.newlineAndIndent(stb, indents+1, option);
 				}else if(i>0) stb.append(", ");
 				else stb.append(' ');
-				values.get(i).toPrettyString(stb, isCompact ? indents : indents+1, option, operation ? PrettifyContext.OPERATION : PrettifyContext.NONE);
+				values.get(i).toPrettyString(stb, isCompact ? indents : indents+1, option, operation ? ToStringContext.OPERATION : ToStringContext.NONE);
 			}
 			if(!isCompact) LiteralFormats.newlineAndIndent(stb, indents, option);
 			else stb.append(' ');
