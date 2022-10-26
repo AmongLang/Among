@@ -3,7 +3,7 @@ package ttmp.among;
 import java.util.Objects;
 
 /**
- * Line & Column
+ * Line &amp; Column
  */
 public final class LnCol{
 	public final int line, column;

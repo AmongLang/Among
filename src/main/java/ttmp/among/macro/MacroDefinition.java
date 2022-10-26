@@ -33,9 +33,11 @@ public final class MacroDefinition extends Macro{
 	/**
 	 * Creates new macro definition.
 	 *
-	 * @param sig      Signature of the macro
-	 * @param params   Parameters of the macro
-	 * @param template Result object of the macro; valid parameter references will be marked for replacements
+	 * @param sig            Signature of the macro
+	 * @param params         Parameters of the macro
+	 * @param template       Result object of the macro; valid parameter references will be marked for replacements
+	 * @param replacements   List of replacement operations
+	 * @param typeInferences Optional type inferences for argument validation
 	 * @throws NullPointerException If either of the parameters are {@code null}
 	 * @throws Sussy                If one of the arguments are invalid
 	 */
@@ -47,8 +49,9 @@ public final class MacroDefinition extends Macro{
 	}
 
 	/**
-	 * Returns deep copy of the raw template used in this macro. All parameter references will be gone. This method is
-	 * strictly for debugging purposes.
+	 * Returns deep copy of the raw template used in this macro. This method is strictly for debugging purposes.
+	 *
+	 * @return Deep copy of template object
 	 */
 	public Among template(){
 		return template.copy();

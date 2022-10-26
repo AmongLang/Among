@@ -88,7 +88,8 @@ public final class Source{
 	}
 
 	/**
-	 * @return Codepoint at the position, or {@link Source#EOF} if the position is outside the source's range.
+	 * @param position Index of codepoint
+	 * @return Codepoint at {@code position}, or {@link Source#EOF} if the position is outside the source's range.
 	 * @throws ArrayIndexOutOfBoundsException If {@code position < 0}
 	 */
 	public int codePointAt(int position){
@@ -100,6 +101,7 @@ public final class Source{
 	}
 
 	/**
+	 * @param position Index of codepoint
 	 * @return Index of the line {@code position} is in part of.
 	 * @throws IndexOutOfBoundsException If {@code position < 0}
 	 */

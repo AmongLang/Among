@@ -25,6 +25,8 @@ public final class MacroBuilder{
 	@Nullable private List<Byte> typeInferences;
 
 	/**
+	 * @param name Name of the macro
+	 * @param type Type of the macro
 	 * @see Macro#builder(String, MacroType)
 	 */
 	public MacroBuilder(String name, MacroType type){
@@ -87,6 +89,8 @@ public final class MacroBuilder{
 	/**
 	 * Build a replacement-based macro - the one you define with Among script.
 	 *
+	 * @param template     Template object
+	 * @param replacements Array of replacement operations
 	 * @return New macro definition
 	 * @throws Sussy If one of the arguments are unspecified or invalid
 	 */

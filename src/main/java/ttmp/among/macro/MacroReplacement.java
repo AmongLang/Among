@@ -43,11 +43,12 @@ public final class MacroReplacement{
 	/**
 	 * Applies the replacement.
 	 *
-	 * @param args         Argument for the replacement
-	 * @param target       Target
-	 * @param copyConstant If {@code true}, macros executed inside this operation returns deep copy of their template.
-	 *                     If {@code false}, they might return reference to object which might be shared between other
-	 *                     places.
+	 * @param args          Argument for the replacement
+	 * @param target        Target
+	 * @param copyConstant  If {@code true}, macros executed inside this operation returns deep copy of their template.
+	 *                      If {@code false}, they might return reference to object which might be shared between other
+	 *                      places.
+	 * @param reportHandler Optional report handler
 	 * @return Object after replacement; it will just return {@code target} most of the time
 	 */
 	public Among apply(Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
@@ -65,12 +66,14 @@ public final class MacroReplacement{
 		/**
 		 * Applies the replacement.
 		 *
-		 * @param args         Argument for the replacement
-		 * @param target       Target
-		 * @param copyConstant If {@code true}, macros executed inside this operation returns deep copy of their
-		 *                     template.
-		 *                     If {@code false}, they might return reference to object which might be shared between
-		 *                     other places.
+		 * @param path          Path of the operation target relative to {@code target}
+		 * @param args          Argument for the replacement
+		 * @param target        Target
+		 * @param copyConstant  If {@code true}, macros executed inside this operation returns deep copy of their
+		 *                      template.
+		 *                      If {@code false}, they might return reference to object which might be shared between
+		 *                      other places.
+		 * @param reportHandler Optional report handler
 		 * @return Object after replacement; it will just return {@code target} most of the time
 		 */
 		public abstract Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler);

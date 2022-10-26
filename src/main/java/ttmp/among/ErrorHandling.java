@@ -2,7 +2,7 @@ package ttmp.among;
 
 /**
  * Specifies error handling mode for various invalid inputs.
- * <table>
+ * <table summary="">
  *   <tr>
  *     <td>Value</td><td>Behavior</td>
  *   </tr>

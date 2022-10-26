@@ -54,12 +54,14 @@ public final class OperatorDefinition extends ToPrettyString.Base{
 	/**
 	 * Creates new operator definition.
 	 *
-	 * @param name      Name of the operator
-	 * @param isKeyword Whether this defines keyword or operator
-	 * @param type      Type of the operator
-	 * @param alias     Optional alias for the operator; if the value is present, resulting operation tree will have the
-	 *                  alias as the name.
-	 * @param priority  Priority of the operator; if {@code NaN} is supplied, it will be replaced with default priority.
+	 * @param name       Name of the operator
+	 * @param isKeyword  Whether this defines keyword or operator
+	 * @param type       Type of the operator
+	 * @param alias      Optional alias for the operator; if the value is present, resulting operation tree will have
+	 *                   the alias as the name.
+	 * @param properties Property of the operator
+	 * @param priority   Priority of the operator; if {@code NaN} is supplied, it will be replaced with default
+	 *                   priority.
 	 * @throws NullPointerException if {@code name == null} or {@code type == null}
 	 */
 	public OperatorDefinition(String name, boolean isKeyword, OperatorType type, @Nullable String alias, byte properties, double priority){

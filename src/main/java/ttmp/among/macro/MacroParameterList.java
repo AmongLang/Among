@@ -30,6 +30,7 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return EMPTY;
 	}
 	/**
+	 * @param parameters Array of parameters
 	 * @return Parameter list with given parameters
 	 * @throws NullPointerException If the array or one of the parameters are {@code null}
 	 * @throws Sussy                If two parameters have same name
@@ -38,6 +39,7 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return parameters.length==0 ? EMPTY : new MacroParameterList(parameters);
 	}
 	/**
+	 * @param parameters List of parameters
 	 * @return Parameter list with given parameters
 	 * @throws NullPointerException If the collection or one of the parameters are {@code null}
 	 * @throws Sussy                If two parameters have same name
@@ -83,6 +85,7 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return params.get(index);
 	}
 	/**
+	 * @param paramName Name of the parameter
 	 * @return Index of the parameter with given name, or {@code -1} if there isn't
 	 * @throws NullPointerException If {@code paramName == null}
 	 */

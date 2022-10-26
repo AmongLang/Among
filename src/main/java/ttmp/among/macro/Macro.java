@@ -30,6 +30,13 @@ public abstract class Macro extends ToPrettyString.Base{
 
 	private final byte @Nullable [] typeInferences;
 
+	/**
+	 * @param signature      Signature of the macro
+	 * @param parameter      Parameters of the macro
+	 * @param typeInferences Optional type inferences for argument validation
+	 * @throws NullPointerException If either of the parameters are {@code null}
+	 * @throws Sussy                If one of the arguments are invalid
+	 */
 	protected Macro(MacroSignature signature, MacroParameterList parameter, byte @Nullable [] typeInferences){
 		switch(signature.type()){
 			case CONST: case ACCESS:

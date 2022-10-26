@@ -73,6 +73,7 @@ public class AmongPrimitive extends Among{
 	}
 
 	/**
+	 * @param fallback Fallback value in case of the parse failing
 	 * @return Value of this primitive parsed into integer, using {@link Integer#parseInt(String)}.
 	 * If the operation fails, {@code fallback} will be returned.
 	 */
@@ -84,6 +85,7 @@ public class AmongPrimitive extends Among{
 		}
 	}
 	/**
+	 * @param fallback Fallback value in case of the parse failing
 	 * @return Value of this primitive parsed into long, using {@link Long#parseLong(String)}.
 	 * If the operation fails, {@code fallback} will be returned.
 	 */
@@ -95,6 +97,7 @@ public class AmongPrimitive extends Among{
 		}
 	}
 	/**
+	 * @param fallback Fallback value in case of the parse failing
 	 * @return Value of this primitive parsed into float, using {@link Float#parseFloat(String)}.
 	 * If the operation fails, {@code fallback} will be returned.
 	 */
@@ -106,6 +109,7 @@ public class AmongPrimitive extends Among{
 		}
 	}
 	/**
+	 * @param fallback Fallback value in case of the parse failing
 	 * @return Value of this primitive parsed into double, using {@link Double#parseDouble(String)}.
 	 * If the operation fails, {@code fallback} will be returned.
 	 */
@@ -117,6 +121,7 @@ public class AmongPrimitive extends Among{
 		}
 	}
 	/**
+	 * @param fallback Fallback value in case of the parse failing
 	 * @return Value of this primitive parsed into boolean. This method returns {@code true} or
 	 * {@code false} if the value is equal to, ignoring case, {@code "true"} and {@code "false"}
 	 * respectively. If the operation fails, {@code fallback} will be returned.

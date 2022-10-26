@@ -182,6 +182,8 @@ public final class MacroRegistry{
 		}
 
 		/**
+		 * @param macro Macro to be checked
+		 * @param args  An argument value
 		 * @return {@code -1} if doesn't match, {@code 0} if matches perfectly, positive number {@code n} if {@code n}
 		 * arguments are oversupplied
 		 */
