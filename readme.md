@@ -14,6 +14,8 @@ The features of **Among** include...
 
 Interested? Disgusted but intrigued nonetheless? Regardless, check out the [Online Docs](https://github.com/AmongLang/Among/wiki).
 
+We also have a [demo app](https://github.com/AmongLang/Among-Demo).
+
 # Artifact
 
 ```groovy
