@@ -3,6 +3,10 @@ package ttmp.among;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @see NodePath#index(int)
+ * @see NodePath#prop(String)
+ */
 public final class NodePathBuilder{
 	private final List<NodePath.Element> pathElements = new ArrayList<>();
 
