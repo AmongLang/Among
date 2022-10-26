@@ -2,7 +2,7 @@ package ttmp.among.operator;
 
 /**
  * Type of the operator
- */ // TODO docs
+ */
 public enum OperatorType{
 	BINARY, POSTFIX, PREFIX;
 
