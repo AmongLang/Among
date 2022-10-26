@@ -16,7 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Absolutely Mental Object Notation. (G is silent (that's how acronyms work right?))<br>
+ * An object responsible for reading among sources. Additionally, this class provides number of compilation options and
+ * interface to provide custom instances or source resolving rules.
  */
 public class AmongEngine{
 	/**
@@ -37,20 +38,12 @@ public class AmongEngine{
 	 * + [
 	 *   + [
 	 *     + [
-	 *       [
-	 *         1
-	 *         2
-	 *         3
-	 *       ]
-	 *       [
-	 *         list
-	 *       ]
+	 *       [1, 2, 3]
+	 *       [list]
 	 *     ]
 	 *     []
 	 *   ]
-	 *   fib [
-	 *     3
-	 *   ]
+	 *   fib [3]
 	 * ]
 	 * </pre>
 	 */
@@ -251,7 +244,7 @@ public class AmongEngine{
 	 * Clears all caches of instance read with {@link AmongEngine#getOrReadFrom(String)} and {@link
 	 * AmongEngine#readFrom(String)}. Source providers and instance providers are not affected.
 	 */
-	public void clearInstances(){
+	public final void clearInstances(){
 		pathByInstance.clear();
 	}
 
