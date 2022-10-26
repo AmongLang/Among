@@ -56,7 +56,7 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 	 * Create a new definition with default set of operators.
 	 *
 	 * @return New definition with default operators
-	 * @see <a href="https://github.com/TTMP-Modding-Team/Among/wiki/Operators-and-Keywords#default-operators">Default
+	 * @see <a href="https://github.com/AmongLang/Among/wiki/Operators-and-Keywords#default-operators">Default
 	 * Operators @ Online Docs</a>
 	 */
 	public static AmongDefinition defaultOperators(){

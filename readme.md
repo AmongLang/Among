@@ -12,7 +12,7 @@ The features of **Among** include...
 * *Operations*, new syntactic alternative for lists, and 100% user definable *operators* and *keywords* which gets parsed to syntax tree.
 * And absolutely cringeworthy naming which will brighten your everyday life!
 
-Interested? Disgusted but intrigued nonetheless? Regardless, check out the [Online Docs](https://github.com/TTMP-Modding-Team/Among/wiki).
+Interested? Disgusted but intrigued nonetheless? Regardless, check out the [Online Docs](https://github.com/AmongLang/Among/wiki).
 
 # NAQs: Never-Answered Questions
 
