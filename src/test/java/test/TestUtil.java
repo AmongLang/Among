@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import ttmp.among.AmongEngine;
 import ttmp.among.compile.CompileResult;
 import ttmp.among.compile.Source;
-import ttmp.among.util.RootAndDefinition;
+import ttmp.among.RootAndDefinition;
 
 import java.io.IOException;
 import java.io.InputStream;

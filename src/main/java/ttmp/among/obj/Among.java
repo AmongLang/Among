@@ -1,9 +1,10 @@
 package ttmp.among.obj;
 
 import org.jetbrains.annotations.Nullable;
+import ttmp.among.AmongWalker;
 import ttmp.among.exception.SussyCast;
-import ttmp.among.format.ToPrettyString;
-import ttmp.among.util.NodePath;
+import ttmp.among.ToPrettyString;
+import ttmp.among.NodePath;
 
 import java.util.Map;
 

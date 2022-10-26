@@ -2,11 +2,11 @@ package test;
 
 import org.junit.jupiter.api.Test;
 import ttmp.among.AmongEngine;
-import ttmp.among.definition.AmongDefinition;
-import ttmp.among.definition.Macro;
-import ttmp.among.definition.MacroType;
+import ttmp.among.AmongDefinition;
+import ttmp.among.macro.Macro;
+import ttmp.among.macro.MacroType;
 import ttmp.among.obj.Among;
-import ttmp.among.util.RootAndDefinition;
+import ttmp.among.RootAndDefinition;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ttmp.among.obj.Among.*;

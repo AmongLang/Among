@@ -1,19 +1,14 @@
 package ttmp.among;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.compile.AmongParser;
+import ttmp.among.internals.AmongParser;
 import ttmp.among.compile.CompileResult;
 import ttmp.among.compile.Source;
-import ttmp.among.definition.AmongDefinition;
-import ttmp.among.definition.MacroDefinition;
-import ttmp.among.definition.OperatorDefinition;
-import ttmp.among.definition.OperatorRegistry;
+import ttmp.among.macro.MacroDefinition;
+import ttmp.among.operator.OperatorDefinition;
+import ttmp.among.operator.OperatorRegistry;
 import ttmp.among.obj.Among;
-import ttmp.among.obj.AmongRoot;
-import ttmp.among.library.DefaultInstanceProvider;
-import ttmp.among.util.ErrorHandling;
-import ttmp.among.library.Provider;
-import ttmp.among.util.RootAndDefinition;
+import ttmp.among.internals.library.DefaultInstanceProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;

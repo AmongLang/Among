@@ -2,15 +2,15 @@ package test;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ttmp.among.definition.AmongDefinition;
-import ttmp.among.definition.Macro;
-import ttmp.among.definition.MacroReplacement;
-import ttmp.among.definition.MacroType;
-import ttmp.among.definition.OperatorType;
+import ttmp.among.AmongDefinition;
+import ttmp.among.macro.Macro;
+import ttmp.among.macro.MacroReplacement;
+import ttmp.among.macro.MacroType;
+import ttmp.among.operator.OperatorType;
 import ttmp.among.exception.Sussy;
-import ttmp.among.obj.AmongRoot;
-import ttmp.among.library.DefaultInstanceProvider;
-import ttmp.among.util.NodePath;
+import ttmp.among.AmongRoot;
+import ttmp.among.internals.library.DefaultInstanceProvider;
+import ttmp.among.NodePath;
 
 import static ttmp.among.obj.Among.*;
 

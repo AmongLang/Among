@@ -2,22 +2,22 @@ package test;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ttmp.among.definition.AmongDefinition;
-import ttmp.among.definition.Macro;
-import ttmp.among.definition.MacroType;
-import ttmp.among.definition.OperatorDefinition;
-import ttmp.among.definition.OperatorPriorities;
-import ttmp.among.definition.OperatorRegistry;
-import ttmp.among.definition.OperatorType;
+import ttmp.among.AmongDefinition;
+import ttmp.among.macro.Macro;
+import ttmp.among.macro.MacroType;
+import ttmp.among.operator.OperatorDefinition;
+import ttmp.among.operator.OperatorPriorities;
+import ttmp.among.operator.OperatorRegistry;
+import ttmp.among.operator.OperatorType;
 import ttmp.among.exception.Sussy;
 import ttmp.among.obj.Among;
-import ttmp.among.obj.AmongRoot;
-import ttmp.among.library.DefaultInstanceProvider;
-import ttmp.among.util.NodePath;
+import ttmp.among.AmongRoot;
+import ttmp.among.internals.library.DefaultInstanceProvider;
+import ttmp.among.NodePath;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ttmp.among.definition.MacroReplacement.valueReplacement;
+import static ttmp.among.macro.MacroReplacement.valueReplacement;
 import static ttmp.among.obj.Among.*;
 
 public class RecompileTests{

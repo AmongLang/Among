@@ -1,10 +1,10 @@
 package ttmp.among.compile;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.definition.AmongDefinition;
+import ttmp.among.AmongDefinition;
 import ttmp.among.exception.SussyCompile;
-import ttmp.among.obj.AmongRoot;
-import ttmp.among.util.RootAndDefinition;
+import ttmp.among.AmongRoot;
+import ttmp.among.RootAndDefinition;
 
 import java.util.ArrayList;
 import java.util.Collections;

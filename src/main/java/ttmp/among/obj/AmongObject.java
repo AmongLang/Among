@@ -1,10 +1,11 @@
 package ttmp.among.obj;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.format.AmongLiteralFormatting;
-import ttmp.among.format.PrettifyContext;
-import ttmp.among.format.PrettifyOption;
-import ttmp.among.util.NodePath;
+import ttmp.among.AmongWalker;
+import ttmp.among.internals.LiteralFormats;
+import ttmp.among.PrettifyContext;
+import ttmp.among.PrettifyOption;
+import ttmp.among.NodePath;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -187,9 +188,9 @@ public class AmongObject extends AmongNameable{
 			for(Map.Entry<String, Among> e : properties.entrySet()){
 				if(first) first = false;
 				else stb.append(',');
-				if(!option.jsonCompatibility&&AmongLiteralFormatting.isSimpleKey(e.getKey()))
-					AmongLiteralFormatting.simpleKeyToString(stb, e.getKey(), false);
-				else AmongLiteralFormatting.primitiveToString(stb, e.getKey());
+				if(!option.jsonCompatibility&&LiteralFormats.isSimpleKey(e.getKey()))
+					LiteralFormats.simpleKeyToString(stb, e.getKey(), false);
+				else LiteralFormats.primitiveToString(stb, e.getKey());
 				stb.append(':');
 				e.getValue().toString(stb, option, PrettifyContext.NONE);
 			}
@@ -211,17 +212,17 @@ public class AmongObject extends AmongNameable{
 						if(first) first = false;
 						else stb.append(',');
 					}
-					AmongLiteralFormatting.newlineAndIndent(stb, indents+1, option);
+					LiteralFormats.newlineAndIndent(stb, indents+1, option);
 				}else if(first){
 					first = false;
 					stb.append(' ');
 				}else stb.append(", ");
-				if(!option.jsonCompatibility&&AmongLiteralFormatting.isSimpleKey(e.getKey()))
-					AmongLiteralFormatting.simpleKeyToString(stb, e.getKey(), false);
-				else AmongLiteralFormatting.primitiveToPrettyString(stb, e.getKey(), isCompact ? indents : indents+1, option);
+				if(!option.jsonCompatibility&&LiteralFormats.isSimpleKey(e.getKey()))
+					LiteralFormats.simpleKeyToString(stb, e.getKey(), false);
+				else LiteralFormats.primitiveToPrettyString(stb, e.getKey(), isCompact ? indents : indents+1, option);
 				e.getValue().toPrettyString(stb.append(": "), isCompact ? indents : indents+1, option, PrettifyContext.NONE);
 			}
-			if(!isCompact) AmongLiteralFormatting.newlineAndIndent(stb, indents, option);
+			if(!isCompact) LiteralFormats.newlineAndIndent(stb, indents, option);
 			else stb.append(' ');
 			stb.append('}');
 		}
