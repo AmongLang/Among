@@ -14,6 +14,18 @@ The features of **Among** include...
 
 Interested? Disgusted but intrigued nonetheless? Regardless, check out the [Online Docs](https://github.com/AmongLang/Among/wiki).
 
+# Artifact
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.github.amonglang:among:${among_version}"
+}
+```
+
 # NAQs: Never-Answered Questions
 
 ### Q: Why?
