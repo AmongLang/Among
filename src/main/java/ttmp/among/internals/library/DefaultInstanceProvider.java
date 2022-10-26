@@ -21,7 +21,7 @@ import ttmp.among.operator.OperatorType;
 import java.util.Map;
 
 /**
- * Provider for "native files" that can be imported from all among scripts. This object is automatically registered on
+ * Provider for "native files" that can be imported from all among scripts. This provider is automatically registered on
  * all instance of {@link AmongEngine}s.
  */
 public final class DefaultInstanceProvider implements Provider<RootAndDefinition>{

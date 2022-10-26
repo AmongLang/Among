@@ -132,7 +132,7 @@ public final class Parser{
 						}
 						a = Among.value(next.expectLiteral());
 					}
-					root.addObject(a);
+					root.add(a);
 					stmtEnd();
 			}
 		}

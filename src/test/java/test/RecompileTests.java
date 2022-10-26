@@ -154,7 +154,7 @@ public class RecompileTests{
 		RootAndDefinition rootAndDefinition =
 				TestUtil.make(TestUtil.expectSourceFrom("recompile_tests", "json"), false);
 		recompileTest(ToStringOption.DEFAULT.variant().jsonCompatible().build(),
-				false, rootAndDefinition.root().objects().toArray(new Among[0]));
+				false, rootAndDefinition.root().values().toArray(new Among[0]));
 	}
 
 	private static void recompileTest(Among... original){
@@ -162,15 +162,15 @@ public class RecompileTests{
 	}
 	private static void recompileTest(ToStringOption option, boolean logValues, Among... original){
 		AmongRoot root = new AmongRoot();
-		for(Among v : original) root.addObject(v);
+		for(Among v : original) root.add(v);
 		System.out.println("========== Original ==========");
 		System.out.println(root.toPrettyString(option));
 		System.out.println();
 		System.out.println("Re-compiling toString() result");
-		assertArrayEquals(original, TestUtil.make(Source.of(root.toString(option)), logValues).root().objects().toArray(new Among[0]));
+		assertArrayEquals(original, TestUtil.make(Source.of(root.toString(option)), logValues).root().values().toArray(new Among[0]));
 		System.out.println();
 		System.out.println("Re-compiling toPrettyString() result");
-		assertArrayEquals(original, TestUtil.make(Source.of(root.toPrettyString(option)), logValues).root().objects().toArray(new Among[0]));
+		assertArrayEquals(original, TestUtil.make(Source.of(root.toPrettyString(option)), logValues).root().values().toArray(new Among[0]));
 	}
 
 	private static void recompileTest(Macro... original){

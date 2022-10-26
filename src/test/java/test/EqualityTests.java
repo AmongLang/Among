@@ -360,7 +360,7 @@ public class EqualityTests{
 			assertArrayEquals(expected,
 					TestUtil.make(TestUtil.expectSourceFrom("equality_tests", name))
 							.root()
-							.objects()
+							.values()
 							.toArray(new Among[0]));
 		}catch(IOException ex){
 			throw new UncheckedIOException(ex);

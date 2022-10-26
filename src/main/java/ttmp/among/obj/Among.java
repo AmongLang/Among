@@ -18,90 +18,90 @@ import java.util.Map;
  */
 public abstract class Among extends ToPrettyString.Base{
 	/**
-	 * Return this object as {@link AmongObject} instance.
+	 * Return this instance as {@link AmongObject} instance.
 	 *
-	 * @return This object as {@link AmongObject} instance.
-	 * @throws SussyCast If this object is not {@link AmongObject}
+	 * @return This instance as {@link AmongObject} instance.
+	 * @throws SussyCast If this instance is not {@link AmongObject}
 	 */
 	public AmongObject asObj(){
 		throw new SussyCast(AmongObject.class, this.getClass());
 	}
 
 	/**
-	 * Returns whether this object is {@link AmongObject} instance.
+	 * Returns whether this instance is {@link AmongObject} instance.
 	 *
-	 * @return Whether this object is {@link AmongObject} instance.
+	 * @return Whether this instance is {@link AmongObject} instance.
 	 */
 	public boolean isObj(){
 		return false;
 	}
 
 	/**
-	 * Return this object as {@link AmongList} instance.
+	 * Return this instance as {@link AmongList} instance.
 	 *
-	 * @return This object as {@link AmongList} instance.
-	 * @throws SussyCast If this object is not {@link AmongList}
+	 * @return This instance as {@link AmongList} instance.
+	 * @throws SussyCast If this instance is not {@link AmongList}
 	 */
 	public AmongList asList(){
 		throw new SussyCast(AmongList.class, this.getClass());
 	}
 
 	/**
-	 * Returns whether this object is {@link AmongList} instance.
+	 * Returns whether this instance is {@link AmongList} instance.
 	 *
-	 * @return Whether this object is {@link AmongList} instance.
+	 * @return Whether this instance is {@link AmongList} instance.
 	 */
 	public boolean isList(){
 		return false;
 	}
 
 	/**
-	 * Return this object as {@link AmongPrimitive} instance.
+	 * Return this instance as {@link AmongPrimitive} instance.
 	 *
-	 * @return This object as {@link AmongPrimitive} instance.
-	 * @throws SussyCast If this object is not {@link AmongPrimitive}
+	 * @return This instance as {@link AmongPrimitive} instance.
+	 * @throws SussyCast If this instance is not {@link AmongPrimitive}
 	 */
 	public AmongPrimitive asPrimitive(){
 		throw new SussyCast(AmongPrimitive.class, this.getClass());
 	}
 
 	/**
-	 * Returns whether this object is {@link AmongPrimitive} instance.
+	 * Returns whether this instance is {@link AmongPrimitive} instance.
 	 *
-	 * @return Whether this object is {@link AmongPrimitive} instance.
+	 * @return Whether this instance is {@link AmongPrimitive} instance.
 	 */
 	public boolean isPrimitive(){
 		return false;
 	}
 
 	/**
-	 * Return this object as {@link AmongNameable} instance.
+	 * Return this instance as {@link AmongNameable} instance.
 	 *
-	 * @return This object as {@link AmongNameable} instance.
-	 * @throws SussyCast If this object is not {@link AmongNameable}
+	 * @return This instance as {@link AmongNameable} instance.
+	 * @throws SussyCast If this instance is not {@link AmongNameable}
 	 */
 	public AmongNameable asNameable(){
 		throw new SussyCast(AmongNameable.class, this.getClass());
 	}
 
 	/**
-	 * Returns whether this object is {@link AmongNameable} instance.
+	 * Returns whether this instance is {@link AmongNameable} instance.
 	 *
-	 * @return Whether this object is {@link AmongNameable} instance.
+	 * @return Whether this instance is {@link AmongNameable} instance.
 	 */
 	public boolean isNameable(){
 		return false;
 	}
 
 	/**
-	 * Create a deep copy of the object; all child nodes will be copied over new object.
+	 * Create a deep copy of this instance; all child nodes will be copied over new object.
 	 *
-	 * @return Copy of the object
+	 * @return Deep copy of this instance
 	 */
 	public abstract Among copy();
 
 	/**
-	 * Visit the node tree of objects in depth-first order.
+	 * Visit each child nodes of this value, in depth-first order.
 	 *
 	 * @param visitor Specific operation to be performed on each node
 	 */
@@ -110,7 +110,7 @@ public abstract class Among extends ToPrettyString.Base{
 	}
 
 	/**
-	 * Visit the node tree of objects in depth-first order.
+	 * Visit each child nodes of this value, in depth-first order.
 	 *
 	 * @param visitor Specific operation to be performed on each node
 	 * @param path    The starting path - i.e. path of this object
@@ -302,8 +302,7 @@ public abstract class Among extends ToPrettyString.Base{
 
 	/**
 	 * Create an empty instance of {@link AmongList} with a name and elements. Providing {@code null} or empty string
-	 * for the name
-	 * essentially creates an unnamed list.
+	 * for the name essentially creates an unnamed list.
 	 *
 	 * @param name     Name of the object
 	 * @param elements Initial elements of the object

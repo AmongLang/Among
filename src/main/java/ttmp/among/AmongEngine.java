@@ -35,10 +35,10 @@ public class AmongEngine{
 	public boolean allowInvalidOperatorRegistration = false;
 
 	/**
-	 * If enabled, constant macro will return deep copied object, rather than template itself. Disabling this option
+	 * If enabled, constant macro will return deep copied value, rather than template itself. Disabling this option
 	 * makes the same instance to be shared between each macro usage along with the macro itself, avoiding potentially
-	 * expensive deep copy operation and saving memory. But, modifying the compilation result poses a risk of undefined
-	 * behavior, due to the possibility of instance being shared across multiple places.<br>
+	 * expensive deep copy operation and saving memory. But doing so poses possible risk of undefined behavior if the
+	 * value is modified after.<br>
 	 * It is advised to disable this option only if the result is not expected to be modified afterwards.
 	 *
 	 * @see MacroDefinition#apply(Among, boolean)

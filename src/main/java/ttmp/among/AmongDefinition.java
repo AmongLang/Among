@@ -41,9 +41,9 @@ public final class AmongDefinition extends ToPrettyString.Base{
 	}
 
 	/**
-	 * Create a shallow copy of this object. Macro and operator instances are recycled.
+	 * Create a shallow copy of this definition. Macro and operator instances are recycled.
 	 *
-	 * @return A shallow copy of this object
+	 * @return A shallow copy of this definition
 	 */
 	public AmongDefinition copy(){
 		return new AmongDefinition(this);

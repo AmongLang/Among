@@ -3,7 +3,7 @@ package ttmp.among;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Simple object to provide instance matching the path provided.
+ * Simple interface to provide instance matching the path provided.
  */
 @FunctionalInterface
 public interface Provider<T>{

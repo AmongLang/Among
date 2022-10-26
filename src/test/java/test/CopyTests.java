@@ -17,8 +17,8 @@ import static ttmp.among.obj.Among.*;
 public class CopyTests{
 	@Test public void copyRoot(){
 		AmongRoot r1 = new AmongRoot();
-		r1.addObject(value("asdfadvbvkcl'''n\";safa;f"));
-		r1.addObject(namedList("asdfadvbvkcl'''n;safa;f", "1213sfadvadfcv"));
+		r1.add(value("asdfadvbvkcl'''n\";safa;f"));
+		r1.add(namedList("asdfadvbvkcl'''n;safa;f", "1213sfadvadfcv"));
 
 		System.out.println("========== Original ==========");
 		System.out.println(r1.toPrettyString());
@@ -27,7 +27,7 @@ public class CopyTests{
 		System.out.println("========== Copy ==========");
 		System.out.println(r2.toPrettyString());
 
-		Assertions.assertEquals(r1.objects(), r2.objects());
+		Assertions.assertEquals(r1.values(), r2.values());
 	}
 	@Test public void copyDefinition(){
 		AmongDefinition def = new AmongDefinition();

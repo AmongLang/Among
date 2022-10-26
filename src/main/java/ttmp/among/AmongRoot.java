@@ -9,79 +9,78 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents all objects defined in single source.
+ * Represents all values defined in single source.
  */
 public final class AmongRoot extends ToPrettyString.Base{
-	private final List<Among> objects;
+	private final List<Among> values;
 
 	/**
 	 * Create an empty root.
 	 */
 	public AmongRoot(){
-		this.objects = new ArrayList<>();
+		this.values = new ArrayList<>();
 	}
 	private AmongRoot(AmongRoot copyFrom){
-		this.objects = new ArrayList<>(copyFrom.objects);
+		this.values = new ArrayList<>(copyFrom.values);
 	}
 
-	public List<Among> objects(){
-		return Collections.unmodifiableList(objects);
+	public List<Among> values(){
+		return Collections.unmodifiableList(values);
 	}
-	public int objectSize(){
-		return objects.size();
+	public int size(){
+		return values.size();
 	}
-	public Among getObject(int index){
-		return objects.get(index);
+	public Among get(int index){
+		return values.get(index);
 	}
-	public void addObject(Among among){
-		this.objects.add(Objects.requireNonNull(among));
+	public void add(Among among){
+		this.values.add(Objects.requireNonNull(among));
 	}
-	public Among removeObject(int index){
-		return objects.remove(index);
+	public Among remove(int index){
+		return values.remove(index);
 	}
 	public boolean isEmpty(){
-		return objects.isEmpty();
+		return values.isEmpty();
 	}
 	public void clear(){
-		objects.clear();
+		values.clear();
 	}
 
 	/**
-	 * Returns the object defined. Only one object is expected; none or multiple objects will produce exception.
+	 * Return the value defined. Only one value is expected to be present; none or multiple values will produce
+	 * an exception.
 	 *
-	 * @return The only object defined
-	 * @throws Sussy If there's none or multiple object defined
+	 * @return The only value defined
+	 * @throws Sussy If there's none or multiple value defined
 	 */
-	public Among singleObject(){
-		switch(objects.size()){
-			case 0: throw new Sussy("No objects defined");
-			case 1: return objects.get(0);
-			default: throw new Sussy("Expected one object");
+	public Among single(){
+		switch(values.size()){
+			case 0: throw new Sussy("No values");
+			case 1: return values.get(0);
+			default: throw new Sussy(values.size()+" values, expected only one");
 		}
 	}
 
 	/**
-	 * Creates a shallow copy of this object. Objects are re-added to the new root without copying.
+	 * Create a shallow copy of this root. Values are re-added to the new root without copying.
 	 *
-	 * @return A shallow copy of this object
+	 * @return A shallow copy of this root
 	 */
 	public AmongRoot copy(){
 		return new AmongRoot(this);
 	}
 
 	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
-		if(objects.isEmpty()) return;
-		for(Among object : objects){
-			object.toString(stb, option, ToStringContext.ROOT);
-		}
+		if(values.isEmpty()) return;
+		for(Among v : values) v.toString(stb, option, ToStringContext.ROOT);
 	}
 
 	@Override public void toPrettyString(StringBuilder stb, int indents, ToStringOption option, ToStringContext context){
 		boolean first = true;
-		for(Among object : objects){
+		for(Among v : values){
 			if(first) first = false;
 			else stb.append('\n');
-			object.toPrettyString(stb, indents, option, ToStringContext.ROOT);
+			v.toPrettyString(stb, indents, option, ToStringContext.ROOT);
 		}
 	}
 }

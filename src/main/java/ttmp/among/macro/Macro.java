@@ -68,9 +68,14 @@ public abstract class Macro extends ToPrettyString.Base{
 	}
 
 	/**
-	 * Applies this macro to given object. The argument object will not be modified; either new object or fixed
-	 * 'constant' object will be given, based on context.<br>
-	 * This method always return new instance of the object. If you do not expect the result to be modified afterwards,
+	 * Applies this macro to given argument value. The argument will not be modified, although its subcomponent may be
+	 * reference in returned value.<br>
+	 * The macro can fail by two ways: Either by returning {@code null} (expected failure), and throwing an exception
+	 * (unexpected failure). If {@code null} is returned, relevant information is passed to {@code reportHandler}. As
+	 * such, providing report handler is highly recommended.<br>
+	 * If an exception is thrown, it will be not reported with {@code reportHandler}. Handling these error cases are
+	 * recommended.<br>
+	 * This method always return new instance. If you do not expect the result to be modified afterwards,
 	 * you may specify {@code copyConstant} to be {@code false} for both faster and memory-efficient operation.
 	 *
 	 * @param argument Argument object
@@ -86,8 +91,8 @@ public abstract class Macro extends ToPrettyString.Base{
 	}
 
 	/**
-	 * Applies this macro to given object. The argument object will not be modified; either new object or fixed
-	 * 'constant' object will be given, based on context.<br>
+	 * Applies this macro to given argument value. The argument will not be modified, although its subcomponent may be
+	 * reference in returned value.<br>
 	 * The macro can fail by two ways: Either by returning {@code null} (expected failure), and throwing an exception
 	 * (unexpected failure). If {@code null} is returned, relevant information is passed to {@code reportHandler}. As
 	 * such, providing report handler is highly recommended.<br>
@@ -114,8 +119,8 @@ public abstract class Macro extends ToPrettyString.Base{
 	}
 
 	/**
-	 * Applies this macro to given object. The argument object will not be modified; either new object or fixed
-	 * 'constant' object will be given, based on context.<br>
+	 * Applies this macro to given argument value. The argument will not be modified, although its subcomponent may be
+	 * reference in returned value.<br>
 	 * The macro can fail by two ways: Either by returning {@code null} (expected failure), and throwing an exception
 	 * (unexpected failure). If {@code null} is returned, relevant information is passed to {@code reportHandler}. As
 	 * such, providing report handler is highly recommended.<br>
