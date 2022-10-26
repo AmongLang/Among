@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 group 'among-lang'
@@ -33,5 +35,74 @@ jar {
                 "Implementation-Title": "among",
                 "Implementation-Version": "${patch_version}"
         )
+    }
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'io.github.amonglang'
+            artifactId = 'among'
+            version = "${spec_version}.${patch_version}"
+            from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'Among'
+                description = 'A JSON-inspired data expression format'
+                url = 'https://github.com/AmongLang/Among'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'Tictim'
+                        name = 'Tictim'
+                        email = 'john.doe@example.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git:https://github.com/AmongLang/Among.git'
+                    developerConnection = 'scm:git:ssh:https://github.com/AmongLang/Among.git'
+                    url = 'https://github.com/AmongLang/Among'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = url('https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/')
+            def snapshotsRepoUrl = url('https://s01.oss.sonatype.org/content/repositories/snapshots/')
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            // credentials(PasswordCredentials)
+            credentials {
+                username = System.getenv("mavenUsername")
+                password = System.getenv("mavenPassword")
+            }
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
     }
 }
