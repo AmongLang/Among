@@ -3,7 +3,7 @@ package ttmp.among.internals.library;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.AmongEngine;
 import ttmp.among.Provider;
-import ttmp.among.compile.ReportType;
+import ttmp.among.ReportType;
 import ttmp.among.AmongDefinition;
 import ttmp.among.macro.Macro;
 import ttmp.among.macro.MacroType;

@@ -1,4 +1,4 @@
-package ttmp.among.compile;
+package ttmp.among;
 
 public enum ReportType{
 	/**

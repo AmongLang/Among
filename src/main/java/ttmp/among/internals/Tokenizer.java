@@ -1,8 +1,8 @@
 package ttmp.among.internals;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.compile.ReportType;
-import ttmp.among.compile.Source;
+import ttmp.among.ReportType;
+import ttmp.among.Source;
 import ttmp.among.internals.Token.TokenType;
 import ttmp.among.operator.OperatorRegistry.NameGroup;
 import ttmp.among.ErrorHandling;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-import static ttmp.among.compile.Source.EOF;
+import static ttmp.among.Source.EOF;
 
 /**
  * Object responsible for converting raw source strings into list of {@link Token}s.<br>

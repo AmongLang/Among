@@ -1,4 +1,4 @@
-package ttmp.among.compile;
+package ttmp.among;
 
 import java.io.BufferedReader;
 import java.io.IOException;

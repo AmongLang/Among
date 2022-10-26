@@ -3,8 +3,8 @@ package test;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import ttmp.among.AmongEngine;
-import ttmp.among.compile.CompileResult;
-import ttmp.among.compile.Source;
+import ttmp.among.CompileResult;
+import ttmp.among.Source;
 import ttmp.among.RootAndDefinition;
 
 import java.io.IOException;

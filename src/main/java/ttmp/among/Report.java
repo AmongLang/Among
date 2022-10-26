@@ -1,4 +1,4 @@
-package ttmp.among.compile;
+package ttmp.among;
 
 import org.jetbrains.annotations.Nullable;
 

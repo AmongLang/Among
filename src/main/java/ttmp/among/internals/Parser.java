@@ -2,10 +2,10 @@ package ttmp.among.internals;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.AmongEngine;
-import ttmp.among.compile.CompileResult;
-import ttmp.among.compile.Report;
-import ttmp.among.compile.ReportType;
-import ttmp.among.compile.Source;
+import ttmp.among.CompileResult;
+import ttmp.among.Report;
+import ttmp.among.ReportType;
+import ttmp.among.Source;
 import ttmp.among.AmongDefinition;
 import ttmp.among.macro.Macro;
 import ttmp.among.macro.MacroDefinition;

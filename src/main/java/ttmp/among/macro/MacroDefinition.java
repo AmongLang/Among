@@ -1,7 +1,7 @@
 package ttmp.among.macro;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.compile.ReportType;
+import ttmp.among.ReportType;
 import ttmp.among.exception.Sussy;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;

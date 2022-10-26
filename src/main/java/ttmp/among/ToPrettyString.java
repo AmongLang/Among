@@ -1,7 +1,5 @@
 package ttmp.among;
 
-import ttmp.among.compile.Source;
-
 /**
  * Base type for objects providing pretty formatting. Most of Among related objects will yield re-compilable script which
  * will produce identical copy of them once read with {@link AmongEngine#read(Source)}.<br>

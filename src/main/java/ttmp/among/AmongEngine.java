@@ -2,8 +2,6 @@ package ttmp.among;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.internals.Parser;
-import ttmp.among.compile.CompileResult;
-import ttmp.among.compile.Source;
 import ttmp.among.macro.MacroDefinition;
 import ttmp.among.operator.OperatorDefinition;
 import ttmp.among.operator.OperatorRegistry;

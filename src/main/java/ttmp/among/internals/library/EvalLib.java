@@ -1,7 +1,7 @@
 package ttmp.among.internals.library;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.compile.ReportType;
+import ttmp.among.ReportType;
 import ttmp.among.exception.Sussy;
 import ttmp.among.obj.Among;
 import ttmp.among.obj.AmongList;
