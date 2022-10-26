@@ -1,15 +1,15 @@
 package test;
 
+import among.AmongDefinition;
+import among.AmongEngine;
+import among.RootAndDefinition;
+import among.macro.Macro;
+import among.macro.MacroType;
+import among.obj.Among;
 import org.junit.jupiter.api.Test;
-import ttmp.among.AmongEngine;
-import ttmp.among.AmongDefinition;
-import ttmp.among.macro.Macro;
-import ttmp.among.macro.MacroType;
-import ttmp.among.obj.Among;
-import ttmp.among.RootAndDefinition;
 
+import static among.obj.Among.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static ttmp.among.obj.Among.*;
 
 public class ImportTests{
 	AmongEngine engine = new AmongEngine();

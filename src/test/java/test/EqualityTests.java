@@ -1,13 +1,13 @@
 package test;
 
+import among.obj.Among;
 import org.junit.jupiter.api.Test;
-import ttmp.among.obj.Among;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+import static among.obj.Among.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static ttmp.among.obj.Among.*;
 
 public class EqualityTests{
 	@Test public void objTest(){

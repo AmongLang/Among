@@ -1,29 +1,29 @@
 package test;
 
+import among.AmongDefinition;
+import among.AmongRoot;
+import among.NodePath;
+import among.RootAndDefinition;
+import among.Source;
+import among.ToStringOption;
+import among.exception.Sussy;
+import among.internals.library.DefaultInstanceProvider;
+import among.macro.Macro;
+import among.macro.MacroType;
+import among.obj.Among;
+import among.operator.OperatorDefinition;
+import among.operator.OperatorPriorities;
+import among.operator.OperatorRegistry;
+import among.operator.OperatorType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ttmp.among.AmongDefinition;
-import ttmp.among.AmongRoot;
-import ttmp.among.NodePath;
-import ttmp.among.RootAndDefinition;
-import ttmp.among.Source;
-import ttmp.among.ToStringOption;
-import ttmp.among.exception.Sussy;
-import ttmp.among.internals.library.DefaultInstanceProvider;
-import ttmp.among.macro.Macro;
-import ttmp.among.macro.MacroType;
-import ttmp.among.obj.Among;
-import ttmp.among.operator.OperatorDefinition;
-import ttmp.among.operator.OperatorPriorities;
-import ttmp.among.operator.OperatorRegistry;
-import ttmp.among.operator.OperatorType;
 
 import java.io.IOException;
 
+import static among.macro.MacroReplacement.valueReplacement;
+import static among.obj.Among.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static ttmp.among.macro.MacroReplacement.valueReplacement;
-import static ttmp.among.obj.Among.*;
 
 public class RecompileTests{
 	@Test

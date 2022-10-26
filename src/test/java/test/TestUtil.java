@@ -1,11 +1,11 @@
 package test;
 
+import among.AmongEngine;
+import among.CompileResult;
+import among.RootAndDefinition;
+import among.Source;
 import org.jetbrains.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
-import ttmp.among.AmongEngine;
-import ttmp.among.CompileResult;
-import ttmp.among.Source;
-import ttmp.among.RootAndDefinition;
 
 import java.io.IOException;
 import java.io.InputStream;

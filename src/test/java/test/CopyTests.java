@@ -1,18 +1,18 @@
 package test;
 
+import among.AmongDefinition;
+import among.AmongRoot;
+import among.NodePath;
+import among.exception.Sussy;
+import among.internals.library.DefaultInstanceProvider;
+import among.macro.Macro;
+import among.macro.MacroReplacement;
+import among.macro.MacroType;
+import among.operator.OperatorType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ttmp.among.AmongDefinition;
-import ttmp.among.macro.Macro;
-import ttmp.among.macro.MacroReplacement;
-import ttmp.among.macro.MacroType;
-import ttmp.among.operator.OperatorType;
-import ttmp.among.exception.Sussy;
-import ttmp.among.AmongRoot;
-import ttmp.among.internals.library.DefaultInstanceProvider;
-import ttmp.among.NodePath;
 
-import static ttmp.among.obj.Among.*;
+import static among.obj.Among.*;
 
 public class CopyTests{
 	@Test public void copyRoot(){
