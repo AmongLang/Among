@@ -1,22 +1,22 @@
 package ttmp.among.internals.library;
 
 import org.jetbrains.annotations.Nullable;
+import ttmp.among.AmongDefinition;
 import ttmp.among.AmongEngine;
 import ttmp.among.Provider;
 import ttmp.among.ReportType;
-import ttmp.among.AmongDefinition;
+import ttmp.among.RootAndDefinition;
+import ttmp.among.TypeFlags;
 import ttmp.among.macro.Macro;
 import ttmp.among.macro.MacroType;
-import ttmp.among.operator.OperatorPriorities;
-import ttmp.among.operator.OperatorProperty;
-import ttmp.among.operator.OperatorRegistry;
-import ttmp.among.operator.OperatorType;
-import ttmp.among.TypeFlags;
 import ttmp.among.obj.Among;
 import ttmp.among.obj.AmongList;
 import ttmp.among.obj.AmongNameable;
 import ttmp.among.obj.AmongObject;
-import ttmp.among.RootAndDefinition;
+import ttmp.among.operator.OperatorPriorities;
+import ttmp.among.operator.OperatorProperty;
+import ttmp.among.operator.OperatorRegistry;
+import ttmp.among.operator.OperatorType;
 
 import java.util.Map;
 
@@ -56,7 +56,8 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 	 * Create a new definition with default set of operators.
 	 *
 	 * @return New definition with default operators
-	 * @see <a href="https://github.com/TTMP-Modding-Team/Among/wiki/Operators-and-Keywords#default-operators">Default Operators @ Online Docs</a>
+	 * @see <a href="https://github.com/TTMP-Modding-Team/Among/wiki/Operators-and-Keywords#default-operators">Default
+	 * Operators @ Online Docs</a>
 	 */
 	public static AmongDefinition defaultOperators(){
 		AmongDefinition definition = new AmongDefinition();
@@ -129,7 +130,7 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 				.build((args, copyConstant, reportHandler) ->
 						Among.list(args[0].asObj()
 								.properties().entrySet().stream()
-								.map(e-> Among.list(e.getKey(), e.getValue()))
+								.map(e -> Among.list(e.getKey(), e.getValue()))
 								.toArray())));
 		definition.macros().add(Macro.builder("concat", MacroType.OPERATION_FN)
 				.param("other", TypeFlags.LIST|TypeFlags.OPERATION)

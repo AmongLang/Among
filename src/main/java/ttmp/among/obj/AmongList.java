@@ -2,10 +2,10 @@ package ttmp.among.obj;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.AmongWalker;
-import ttmp.among.internals.LiteralFormats;
+import ttmp.among.NodePath;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;
-import ttmp.among.NodePath;
+import ttmp.among.internals.LiteralFormats;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -2,15 +2,15 @@ package ttmp.among.macro;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.ReportType;
+import ttmp.among.ToPrettyString;
+import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.TypeFlags;
 import ttmp.among.exception.Sussy;
-import ttmp.among.ToStringContext;
+import ttmp.among.internals.LiteralFormats;
 import ttmp.among.obj.Among;
 import ttmp.among.obj.AmongList;
 import ttmp.among.obj.AmongObject;
-import ttmp.among.internals.LiteralFormats;
-import ttmp.among.ToStringOption;
-import ttmp.among.ToPrettyString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,8 +68,8 @@ public abstract class Macro extends ToPrettyString.Base{
 	 *
 	 * @param argument Argument object
 	 * @return Among object with macro applied, or {@code null} if any error occurs
-	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it might
-	 *                              not throw an exception
+	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it
+	 *                              might not throw an exception
 	 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 	 * @see Macro#apply(Among, boolean)
 	 * @see Macro#apply(Among, boolean, BiConsumer)
@@ -97,8 +97,8 @@ public abstract class Macro extends ToPrettyString.Base{
 	 * @param copyConstant If {@code true}, constant macro will return deep copy of template.
 	 * @return Among object with macro applied, or {@code null} if any error occurs. If the macro is argument-independent,
 	 * the returned instance may be shared between other places, including the macro itself.
-	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it might
-	 *                              not throw an exception
+	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it
+	 *                              might not throw an exception
 	 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 	 * @see Macro#apply(Among, boolean, BiConsumer)
 	 */
@@ -127,8 +127,8 @@ public abstract class Macro extends ToPrettyString.Base{
 	 *                      does not change process.
 	 * @return Among object with macro applied, or {@code null} if any 'expected' error occurs. If the macro is
 	 * argument-independent, the returned instance may be shared between other places, including the macro itself.
-	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it might
-	 *                              not throw an exception
+	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it
+	 *                              might not throw an exception
 	 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 	 */
 	@Nullable public final Among apply(Among argument, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
@@ -143,8 +143,8 @@ public abstract class Macro extends ToPrettyString.Base{
 						String paramName = actualParamIndex>=0&&actualParamIndex<this.parameter.size() ?
 								this.parameter.paramAt(actualParamIndex).name() : "self";
 						reportHandler.accept(ReportType.ERROR,
-								"Type of argument '"+paramName+"' does not match its inferred type.\n" +
-										"  Expected type: "+TypeFlags.toString(this.typeInferences[i])+"\n" +
+								"Type of argument '"+paramName+"' does not match its inferred type.\n"+
+										"  Expected type: "+TypeFlags.toString(this.typeInferences[i])+"\n"+
 										"  Supplied argument: "+TypeFlags.toString(TypeFlags.from(args[i])));
 					}
 					invalid = true;

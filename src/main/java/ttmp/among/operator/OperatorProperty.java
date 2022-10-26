@@ -14,7 +14,8 @@ public interface OperatorProperty{
 	 */
 	byte RIGHT_ASSOCIATIVE = 1;
 	/**
-	 * Only applicable to binary operators. Marks the operator as accessor: a special binary operator with additional parsing rules.
+	 * Only applicable to binary operators. Marks the operator as accessor: a special binary operator with additional
+	 * parsing rules.
 	 */
 	byte ACCESSOR = 2;
 

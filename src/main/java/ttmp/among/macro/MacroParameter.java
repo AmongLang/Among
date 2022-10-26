@@ -2,10 +2,10 @@ package ttmp.among.macro;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.internals.LiteralFormats;
+import ttmp.among.ToPrettyString;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;
-import ttmp.among.ToPrettyString;
+import ttmp.among.internals.LiteralFormats;
 import ttmp.among.obj.Among;
 
 import java.util.Objects;

@@ -75,7 +75,7 @@ public final class Report{
 
 		StringBuilder stb = new StringBuilder();
 		int i = 0;
-		for(;i<lineSize; i++){
+		for(; i<lineSize; i++){
 			int c = source.codePointAt(lineStart+i);
 			if(c==Source.EOF) break;
 			if(lineStart+i==sourcePosition) stb.append("/* HERE >>> */");

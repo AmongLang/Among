@@ -1,8 +1,8 @@
 package ttmp.among;
 
 /**
- * Base type for objects providing pretty formatting. Most of Among related objects will yield re-compilable script which
- * will produce identical copy of them once read with {@link AmongEngine#read(Source)}.<br>
+ * Base type for objects providing pretty formatting. Most of Among related objects will yield re-compilable script
+ * which will produce identical copy of them once read with {@link AmongEngine#read(Source)}.<br>
  * All instances implementing this interface is expected to override {@link Object#toString()} to call
  * {@link ToPrettyString#toString(ToStringOption)} with option of {@link ToStringOption#DEFAULT}.
  */

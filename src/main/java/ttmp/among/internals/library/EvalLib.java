@@ -129,14 +129,16 @@ public final class EvalLib{
 		Among a2 = eval(among, reportHandler);
 		if(a2==null) return null;
 		Boolean b = toBool(a2);
-		if(b==null&&reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Invalid input '"+a2+"': Expected boolean");
+		if(b==null&&reportHandler!=null)
+			reportHandler.accept(ReportType.ERROR, "Invalid input '"+a2+"': Expected boolean");
 		return null;
 	}
 	@Nullable private static Double evalNum(Among among, @Nullable BiConsumer<ReportType, String> reportHandler){
 		Among a2 = eval(among, reportHandler);
 		if(a2==null) return null;
 		Double n = toNum(a2);
-		if(n==null&&reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Invalid input '"+a2+"': Expected number");
+		if(n==null&&reportHandler!=null)
+			reportHandler.accept(ReportType.ERROR, "Invalid input '"+a2+"': Expected number");
 		return n;
 	}
 

@@ -1,11 +1,11 @@
 package ttmp.among.internals;
 
 import org.jetbrains.annotations.Nullable;
+import ttmp.among.ErrorHandling;
 import ttmp.among.ReportType;
 import ttmp.among.Source;
 import ttmp.among.internals.Token.TokenType;
 import ttmp.among.operator.OperatorRegistry.NameGroup;
-import ttmp.among.ErrorHandling;
 
 import java.util.ArrayList;
 import java.util.List;

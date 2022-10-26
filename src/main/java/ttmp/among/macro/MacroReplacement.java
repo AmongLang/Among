@@ -1,10 +1,10 @@
 package ttmp.among.macro;
 
 import org.jetbrains.annotations.Nullable;
+import ttmp.among.NodePath;
 import ttmp.among.ReportType;
 import ttmp.among.exception.Sussy;
 import ttmp.among.obj.Among;
-import ttmp.among.NodePath;
 
 import java.util.Objects;
 import java.util.function.BiConsumer;
@@ -46,7 +46,8 @@ public final class MacroReplacement{
 	 * @param args         Argument for the replacement
 	 * @param target       Target
 	 * @param copyConstant If {@code true}, macros executed inside this operation returns deep copy of their template.
-	 *                     If {@code false}, they might return reference to object which might be shared between other places.
+	 *                     If {@code false}, they might return reference to object which might be shared between other
+	 *                     places.
 	 * @return Object after replacement; it will just return {@code target} most of the time
 	 */
 	public Among apply(Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
@@ -66,8 +67,10 @@ public final class MacroReplacement{
 		 *
 		 * @param args         Argument for the replacement
 		 * @param target       Target
-		 * @param copyConstant If {@code true}, macros executed inside this operation returns deep copy of their template.
-		 *                     If {@code false}, they might return reference to object which might be shared between other places.
+		 * @param copyConstant If {@code true}, macros executed inside this operation returns deep copy of their
+		 *                     template.
+		 *                     If {@code false}, they might return reference to object which might be shared between
+		 *                     other places.
 		 * @return Object after replacement; it will just return {@code target} most of the time
 		 */
 		public abstract Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler);

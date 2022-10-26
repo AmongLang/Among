@@ -33,7 +33,8 @@ public enum TokenizationMode{
 	 */
 	WORD,
 	/**
-	 * Any encountered literals will produce {@link TokenType#WORD WORD}s. Words with no escape sequences are instead emitted as {@link TokenType#PLAIN_WORD PLAIN_WORD}.
+	 * Any encountered literals will produce {@link TokenType#WORD WORD}s. Words with no escape sequences are instead
+	 * emitted as {@link TokenType#PLAIN_WORD PLAIN_WORD}.
 	 */
 	PLAIN_WORD,
 	/**
@@ -61,7 +62,8 @@ public enum TokenizationMode{
 	OPERATION;
 
 	/**
-	 * @return Whether this mode emits colon(':') as its own token - if {@code false}, it indicates colons will be treated as a part of literal.
+	 * @return Whether this mode emits colon(':') as its own token - if {@code false}, it indicates colons will be
+	 * treated as a part of literal.
 	 */
 	public boolean emitsColon(){
 		switch(this){

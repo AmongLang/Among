@@ -2,10 +2,10 @@ package ttmp.among.macro;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.ReportType;
-import ttmp.among.exception.Sussy;
+import ttmp.among.ToPrettyString;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;
-import ttmp.among.ToPrettyString;
+import ttmp.among.exception.Sussy;
 import ttmp.among.obj.Among;
 
 import java.util.ArrayList;
@@ -23,7 +23,8 @@ import java.util.function.BiConsumer;
  * </pre>
  * <p>
  * Note that, due to the nature of replacement operations, the results of {@link MacroDefinition#toString()}
- * and {@link ToPrettyString#toPrettyString(int, ToStringOption, ToStringContext)} might not produce re-compilable macro script.
+ * and {@link ToPrettyString#toPrettyString(int, ToStringOption, ToStringContext)} might not produce re-compilable macro
+ * script.
  */
 public final class MacroDefinition extends Macro{
 	private final Among template;
@@ -46,7 +47,8 @@ public final class MacroDefinition extends Macro{
 	}
 
 	/**
-	 * Returns deep copy of the raw template used in this macro. All parameter references will be gone. This method is strictly for debugging purposes.
+	 * Returns deep copy of the raw template used in this macro. All parameter references will be gone. This method is
+	 * strictly for debugging purposes.
 	 */
 	public Among template(){
 		return template.copy();

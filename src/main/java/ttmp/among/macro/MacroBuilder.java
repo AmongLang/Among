@@ -2,9 +2,9 @@ package ttmp.among.macro;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.ReportType;
+import ttmp.among.ToStringOption;
 import ttmp.among.TypeFlags;
 import ttmp.among.exception.Sussy;
-import ttmp.among.ToStringOption;
 import ttmp.among.obj.Among;
 
 import java.util.ArrayList;
@@ -105,29 +105,29 @@ public final class MacroBuilder{
 	@FunctionalInterface
 	public interface MacroFunction{
 		/**
-		 * Applies this macro to given object. The arguments should not be modified. The returning object may or may not
-		 * be shared instance, based on context.<br>
-		 * The function can fail by two ways: Either by returning {@code null} (expected failure), and throwing an exception
-		 * (unexpected failure). If {@code null} is to be returned, relevant information should be passed to
+		 * Applies this macro to given object. The arguments should not be modified. The returning object may or may
+		 * not be shared instance, based on context.<br>
+		 * The function can fail by two ways: Either by returning {@code null} (expected failure), and throwing an
+		 * exception (unexpected failure). If {@code null} is to be returned, relevant information should be passed to
 		 * {@code reportHandler}.<br>
 		 * If an exception is to be thrown, it is unnecessary to report the error to {@code reportHandler}.<br>
-		 * If {@code copyConstant} is {@code false}, and this macro function is argument-independent, the returned instance
-		 * may be shared between other places. As the instance is shared among macro itself and possibly many other places
-		 * where macro is used, modifying the result will bring consequences. This is intentional design choice to enable
-		 * users to avoid possibly expensive deep copy process on right situations.
+		 * If {@code copyConstant} is {@code false}, and this macro function is argument-independent, the returned
+		 * instance may be shared between other places. As the instance is shared among macro itself and possibly many
+		 * other places where macro is used, modifying the result will bring consequences. This is intentional design
+		 * choice to enable users to avoid possibly expensive deep copy process on right situations.
 		 *
-		 * @param args          List of arguments. If the macro is non-function macro, size of the arguments are equal to
-		 *                      parameter size, corresponding to each parameter by declaration order.<br>
-		 *                      If the macro is function macro, size of the arguments are size of the parameter plus one,
-		 *                      with {@code self} object being at the start followed by rest of the parameters in
+		 * @param args          List of arguments. If the macro is non-function macro, size of the arguments are equal
+		 *                      to parameter size, corresponding to each parameter by declaration order.<br>
+		 *                      If the macro is function macro, size of the arguments are size of the parameter plus
+		 *                      one, with {@code self} object being at the start followed by rest of the parameters in
 		 *                      declaration order.
 		 * @param copyConstant  If {@code true}, constant macro will return deep copy of template.
-		 * @param reportHandler Optional report handler for analyzing any compilation issues. Presence of the report handler
-		 *                      does not change process.
+		 * @param reportHandler Optional report handler for analyzing any compilation issues. Presence of the report
+		 *                      handler does not change process.
 		 * @return Among object with macro applied, or {@code null} if any 'expected' error occurs. If the macro is
 		 * argument-independent, the returned instance may be shared between other places, including the macro itself.
-		 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it might
-		 *                              not throw an exception
+		 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it
+		 *                              might not throw an exception
 		 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 		 */
 		@Nullable Among applyMacro(Among[] args, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler);

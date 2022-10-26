@@ -3,10 +3,10 @@ package ttmp.among.macro;
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.ReportType;
 import ttmp.among.ToStringContext;
+import ttmp.among.ToStringOption;
 import ttmp.among.obj.Among;
 import ttmp.among.obj.AmongList;
 import ttmp.among.obj.AmongObject;
-import ttmp.among.ToStringOption;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -182,7 +182,8 @@ public final class MacroRegistry{
 		}
 
 		/**
-		 * @return {@code -1} if doesn't match, {@code 0} if matches perfectly, positive number {@code n} if {@code n} arguments are oversupplied
+		 * @return {@code -1} if doesn't match, {@code 0} if matches perfectly, positive number {@code n} if {@code n}
+		 * arguments are oversupplied
 		 */
 		protected abstract int match(Macro macro, T args);
 		/**

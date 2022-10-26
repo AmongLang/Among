@@ -1,11 +1,11 @@
 package ttmp.among.obj;
 
 import ttmp.among.AmongWalker;
-import ttmp.among.exception.Sussy;
-import ttmp.among.internals.LiteralFormats;
+import ttmp.among.NodePath;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;
-import ttmp.among.NodePath;
+import ttmp.among.exception.Sussy;
+import ttmp.among.internals.LiteralFormats;
 
 import java.util.Objects;
 

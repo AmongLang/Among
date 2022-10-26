@@ -1,10 +1,10 @@
 package ttmp.among.operator;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.internals.LiteralFormats;
+import ttmp.among.ToPrettyString;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;
-import ttmp.among.ToPrettyString;
+import ttmp.among.internals.LiteralFormats;
 
 import java.text.DecimalFormat;
 import java.util.Objects;
@@ -57,7 +57,8 @@ public final class OperatorDefinition extends ToPrettyString.Base{
 	 * @param name      Name of the operator
 	 * @param isKeyword Whether this defines keyword or operator
 	 * @param type      Type of the operator
-	 * @param alias     Optional alias for the operator; if the value is present, resulting operation tree will have the alias as the name.
+	 * @param alias     Optional alias for the operator; if the value is present, resulting operation tree will have the
+	 *                  alias as the name.
 	 * @param priority  Priority of the operator; if {@code NaN} is supplied, it will be replaced with default priority.
 	 * @throws NullPointerException if {@code name == null} or {@code type == null}
 	 */

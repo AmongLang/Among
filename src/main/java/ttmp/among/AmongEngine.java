@@ -2,11 +2,11 @@ package ttmp.among;
 
 import org.jetbrains.annotations.Nullable;
 import ttmp.among.internals.Parser;
+import ttmp.among.internals.library.DefaultInstanceProvider;
 import ttmp.among.macro.MacroDefinition;
+import ttmp.among.obj.Among;
 import ttmp.among.operator.OperatorDefinition;
 import ttmp.among.operator.OperatorRegistry;
-import ttmp.among.obj.Among;
-import ttmp.among.internals.library.DefaultInstanceProvider;
 
 import java.util.ArrayList;
 import java.util.HashMap;

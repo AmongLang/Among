@@ -1,9 +1,9 @@
 package ttmp.among.obj;
 
 import org.jetbrains.annotations.Nullable;
-import ttmp.among.internals.LiteralFormats;
 import ttmp.among.ToStringContext;
 import ttmp.among.ToStringOption;
+import ttmp.among.internals.LiteralFormats;
 
 /**
  * Base class for all 'nameable' objects; i.e.
