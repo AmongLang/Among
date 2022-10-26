@@ -15,19 +15,21 @@ import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TestUtil{
-	public static final boolean log = true;
-	private static final AmongEngine engine = new AmongEngine();
+	public static final AmongEngine engine = new AmongEngine();
 
 	public static RootAndDefinition make(String src){
 		return make(Source.of(src));
 	}
 	public static RootAndDefinition make(Source src){
+		return make(src, true);
+	}
+	public static RootAndDefinition make(Source src, boolean logValues){
 		long t = System.currentTimeMillis();
 		CompileResult result = engine.read(src, null, null);
 		t = System.currentTimeMillis()-t;
 		result.printReports();
 		result.expectSuccess();
-		log(result.rootAndDefinition(), t);
+		log(result.rootAndDefinition(), t, logValues);
 		return result.rootAndDefinition();
 	}
 
@@ -37,7 +39,7 @@ public class TestUtil{
 		t = System.currentTimeMillis()-t;
 		Assertions.assertFalse(result.isSuccess(), "Failed at failing smh");
 		result.printReports();
-		log(result.rootAndDefinition(), t);
+		log(result.rootAndDefinition(), t, true);
 	}
 
 	public enum ExpectWarning{WARNING, NO_WARNING}
@@ -49,7 +51,7 @@ public class TestUtil{
 		result.expectSuccess();
 		if(expectWarning!=null) Assertions.assertEquals(result.hasWarning(), expectWarning==ExpectWarning.WARNING,
 				expectWarning==ExpectWarning.WARNING ? "Expected warning" : "Unexpected warning");
-		log(result.rootAndDefinition(), t);
+		log(result.rootAndDefinition(), t, true);
 	}
 
 	public static Source expectSourceFrom(String folder, String fileName) throws IOException{
@@ -64,9 +66,9 @@ public class TestUtil{
 		return file==null ? null : Source.read(new InputStreamReader(file, StandardCharsets.UTF_8));
 	}
 
-	public static void log(RootAndDefinition root, long time){
-		if(log){
+	public static void log(RootAndDefinition root, long time, boolean logValues){
 			System.out.println("Parsed in "+time+"ms");
+		if(logValues){
 			System.out.println("========== Compact String ==========");
 			System.out.println(root);
 			System.out.println("========== Pretty String ==========");

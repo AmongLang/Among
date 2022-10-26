@@ -3,17 +3,22 @@ package test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ttmp.among.AmongDefinition;
+import ttmp.among.AmongRoot;
+import ttmp.among.NodePath;
+import ttmp.among.RootAndDefinition;
+import ttmp.among.Source;
+import ttmp.among.ToStringOption;
+import ttmp.among.exception.Sussy;
+import ttmp.among.internals.library.DefaultInstanceProvider;
 import ttmp.among.macro.Macro;
 import ttmp.among.macro.MacroType;
+import ttmp.among.obj.Among;
 import ttmp.among.operator.OperatorDefinition;
 import ttmp.among.operator.OperatorPriorities;
 import ttmp.among.operator.OperatorRegistry;
 import ttmp.among.operator.OperatorType;
-import ttmp.among.exception.Sussy;
-import ttmp.among.obj.Among;
-import ttmp.among.AmongRoot;
-import ttmp.among.internals.library.DefaultInstanceProvider;
-import ttmp.among.NodePath;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -143,17 +148,29 @@ public class RecompileTests{
 				.allOperators().toArray(OperatorDefinition[]::new));
 	}
 
+	@Test
+	@DisplayName("JSON compat")
+	public void jsonCompat() throws IOException{
+		RootAndDefinition rootAndDefinition =
+				TestUtil.make(TestUtil.expectSourceFrom("recompile_tests", "json"), false);
+		recompileTest(ToStringOption.DEFAULT.variant().jsonCompatible().build(),
+				false, rootAndDefinition.root().objects().toArray(new Among[0]));
+	}
+
 	private static void recompileTest(Among... original){
+		recompileTest(ToStringOption.DEFAULT, true, original);
+	}
+	private static void recompileTest(ToStringOption option, boolean logValues, Among... original){
 		AmongRoot root = new AmongRoot();
 		for(Among v : original) root.addObject(v);
 		System.out.println("========== Original ==========");
-		System.out.println(root.toPrettyString());
+		System.out.println(root.toPrettyString(option));
 		System.out.println();
 		System.out.println("Re-compiling toString() result");
-		assertArrayEquals(original, TestUtil.make(root.toString()).root().objects().toArray(new Among[0]));
+		assertArrayEquals(original, TestUtil.make(Source.of(root.toString(option)), logValues).root().objects().toArray(new Among[0]));
 		System.out.println();
 		System.out.println("Re-compiling toPrettyString() result");
-		assertArrayEquals(original, TestUtil.make(root.toPrettyString()).root().objects().toArray(new Among[0]));
+		assertArrayEquals(original, TestUtil.make(Source.of(root.toPrettyString(option)), logValues).root().objects().toArray(new Among[0]));
 	}
 
 	private static void recompileTest(Macro... original){

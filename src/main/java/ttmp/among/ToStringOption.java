@@ -36,6 +36,14 @@ public final class ToStringOption{
 		this.jsonCompatibility = jsonCompatibility;
 	}
 
+	/**
+	 * Create a variant option of this.
+	 * @return Builder
+	 */
+	public ToStringOptionBuilder variant(){
+		return new ToStringOptionBuilder(this);
+	}
+
 	@Override public boolean equals(Object o){
 		if(this==o) return true;
 		if(o==null||getClass()!=o.getClass()) return false;

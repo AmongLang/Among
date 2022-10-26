@@ -89,7 +89,7 @@ public class ImportTests{
 		RootAndDefinition root = engine.getOrReadFrom(name);
 		t = System.currentTimeMillis()-t;
 		assertNotNull(root, "Compilation failed");
-		TestUtil.log(root, t);
+		TestUtil.log(root, t, true);
 		assertArrayEquals(expected, root.root().objects().toArray(new Among[0]));
 	}
 	private static void err(AmongEngine engine, String name){
