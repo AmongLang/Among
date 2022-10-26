@@ -70,14 +70,15 @@ publishing {
                 }
                 developers {
                     developer {
-                        id = 'Tictim'
                         name = 'Tictim'
-                        email = 'john.doe@example.com'
+                        email = 'ksw07149@gmail.com'
+                        organization = 'AmongLang'
+                        organizationUrl = 'https://github.com/AmongLang'
                     }
                 }
                 scm {
                     connection = 'scm:git:git:https://github.com/AmongLang/Among.git'
-                    developerConnection = 'scm:git:ssh:https://github.com/AmongLang/Among.git'
+                    developerConnection = 'scm:git:ssh://github.com:AmongLang/Among.git'
                     url = 'https://github.com/AmongLang/Among'
                 }
             }
