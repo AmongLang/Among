@@ -41,7 +41,7 @@ public final class LiteralFormats{
 	public static void simpleWordToString(StringBuilder stb, String name){
 		stb.append(standardReplace(WORD_SPECIALS, name, true));
 	}
-	public static void simpleKeyToString(StringBuilder stb, String key, boolean paramRef){
+	public static void simpleKeyToString(StringBuilder stb, String key){
 		stb.append(standardReplace(KEY_SPECIALS, key, true));
 	}
 	public static void simpleMacroNameToString(StringBuilder stb, String name){

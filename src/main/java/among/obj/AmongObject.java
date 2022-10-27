@@ -189,7 +189,7 @@ public class AmongObject extends AmongNameable{
 				if(first) first = false;
 				else stb.append(',');
 				if(!option.jsonCompatibility&&LiteralFormats.isSimpleKey(e.getKey()))
-					LiteralFormats.simpleKeyToString(stb, e.getKey(), false);
+					LiteralFormats.simpleKeyToString(stb, e.getKey());
 				else LiteralFormats.primitiveToString(stb, e.getKey());
 				stb.append(':');
 				e.getValue().toString(stb, option, ToStringContext.NONE);
@@ -218,7 +218,7 @@ public class AmongObject extends AmongNameable{
 					stb.append(' ');
 				}else stb.append(", ");
 				if(!option.jsonCompatibility&&LiteralFormats.isSimpleKey(e.getKey()))
-					LiteralFormats.simpleKeyToString(stb, e.getKey(), false);
+					LiteralFormats.simpleKeyToString(stb, e.getKey());
 				else LiteralFormats.primitiveToPrettyString(stb, e.getKey(), isCompact ? indents : indents+1, option);
 				e.getValue().toPrettyString(stb.append(": "), isCompact ? indents : indents+1, option, ToStringContext.NONE);
 			}
