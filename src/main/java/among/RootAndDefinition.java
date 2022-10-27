@@ -30,6 +30,15 @@ public final class RootAndDefinition extends ToPrettyString.Base{
 		return definition;
 	}
 
+	/**
+	 * Create a copy of this object. Both root and definitions will be shallow copied.
+	 *
+	 * @return A copy of this object
+	 */
+	public RootAndDefinition copy(){
+		return new RootAndDefinition(root.copy(), definition.copy());
+	}
+
 	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
 		if(definition.isEmpty()){
 			if(!root.isEmpty()) root.toString(stb, option, ToStringContext.NONE);
