@@ -144,7 +144,9 @@ public class AmongPrimitive extends Among{
 	}
 
 	@Override public AmongPrimitive copy(){
-		return new AmongPrimitive(this.value);
+		AmongPrimitive p = new AmongPrimitive(this.value);
+		p.setSourcePosition(this.sourcePosition());
+		return p;
 	}
 
 	@Override public boolean equals(Object o){

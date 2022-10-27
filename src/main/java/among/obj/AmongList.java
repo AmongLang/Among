@@ -130,6 +130,7 @@ public class AmongList extends AmongNameable implements Iterable<Among>{
 
 	@Override public AmongList copy(){
 		AmongList l = new AmongList(this.getName());
+		l.setSourcePosition(this.sourcePosition());
 		l.setOperation(this.isOperation());
 		for(Among among : this.values)
 			l.add(among.copy());

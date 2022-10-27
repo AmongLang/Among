@@ -163,6 +163,7 @@ public class AmongObject extends AmongNameable{
 
 	@Override public AmongObject copy(){
 		AmongObject o = new AmongObject(this.getName());
+		o.setSourcePosition(this.sourcePosition());
 		for(Map.Entry<String, Among> e : this.properties.entrySet())
 			o.setProperty(e.getKey(), e.getValue().copy());
 		return o;

@@ -20,6 +20,7 @@ public class ErrorTests{
 		list.add(errorTest("redundantComma"));
 		list.add(errorTest("wtf"));
 		list.add(errorTest("overlapWarn"));
+		list.add(errorTest("sourcePosition"));
 		return list;
 	}
 
