@@ -53,11 +53,10 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 	}
 
 	/**
-	 * Create a new definition with default set of operators.
+	 * Create new definition with contents of {@code default_operators} default library.
 	 *
-	 * @return New definition with default operators
-	 * @see <a href="https://github.com/AmongLang/Among/wiki/Operators-and-Keywords#default-operators">Default
-	 * Operators @ Online Docs</a>
+	 * @return New definition with contents of {@code default_operators} default library
+	 * @see <a href="https://github.com/AmongLang/Among/wiki/Use-Statement#default-operators">Online Docs</a>
 	 */
 	public static AmongDefinition defaultOperators(){
 		AmongDefinition definition = new AmongDefinition();
@@ -87,9 +86,10 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 	}
 
 	/**
-	 * Create new definition with eval function.
+	 * Create new definition with contents of {@code eval} default library.
 	 *
-	 * @return New definition with eval function
+	 * @return New definition with contents of {@code eval} default library
+	 * @see <a href="https://github.com/AmongLang/Among/wiki/Use-Statement#eval">Online Docs</a>
 	 */
 	public static AmongDefinition eval(){
 		AmongDefinition definition = defaultOperators();
@@ -99,6 +99,12 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 		return definition;
 	}
 
+	/**
+	 * Create new definition with contents of {@code collection} default library.
+	 *
+	 * @return New definition with contents of {@code collection} default library
+	 * @see <a href="https://github.com/AmongLang/Among/wiki/Use-Statement#collections">Online Docs</a>
+	 */
 	public static AmongDefinition collection(){
 		AmongDefinition definition = new AmongDefinition();
 		definition.operators().addOperator(".", OperatorType.BINARY, "", OperatorProperty.ACCESSOR, OperatorPriorities.BINARY_ACCESS);
@@ -249,6 +255,12 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 		return definition;
 	}
 
+	/**
+	 * Create new definition with contents of {@code format} default library.
+	 *
+	 * @return New definition with contents of {@code format} default library
+	 * @see <a href="https://github.com/AmongLang/Among/wiki/Use-Statement#format">Online Docs</a>
+	 */
 	public static AmongDefinition format(){
 		AmongDefinition definition = new AmongDefinition();
 		definition.operators().addOperator("%", OperatorType.BINARY, "format", 0.5);

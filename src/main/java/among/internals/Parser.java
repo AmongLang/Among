@@ -57,13 +57,13 @@ public final class Parser{
 		this.tokenizer = new Tokenizer(source, this);
 	}
 
-	public AmongEngine engine(){
+	AmongEngine engine(){
 		return engine;
 	}
-	public AmongDefinition definition(){
+	AmongDefinition definition(){
 		return definition;
 	}
-	public AmongDefinition importDefinition(){
+	AmongDefinition importDefinition(){
 		return importDefinition;
 	}
 
