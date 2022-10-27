@@ -2,6 +2,8 @@ package among;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -54,8 +56,9 @@ public final class Report{
 
 		logger.accept((lc!=null ? "["+lc+"] " : "")+type.toString()+": "+message);
 		if(exception!=null){
-			logger.accept(exception.toString());
-			exception.printStackTrace();
+			StringWriter w = new StringWriter();
+			exception.printStackTrace(new PrintWriter(w));
+			logger.accept(w.toString());
 		}
 		if(lc!=null){
 			logger.accept(" "+lc.line+" |"+getLineSnippet(sourcePosition, source));
