@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
-public final class EvalLib{
+final class EvalLib{
 	private EvalLib(){}
 
 	@Nullable public static Among eval(Among among, @Nullable BiConsumer<ReportType, String> reportHandler){

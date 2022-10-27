@@ -24,7 +24,7 @@ import static among.Source.EOF;
  * @see Token
  * @see TokenizationMode
  */
-public final class Tokenizer{
+final class Tokenizer{
 	private final Source source;
 	private final Parser parser;
 
@@ -317,8 +317,8 @@ public final class Tokenizer{
 	@Nullable private NameGroup match(boolean keyword){
 		int prev = srcIndex;
 		Set<NameGroup> set = keyword ?
-				parser.importRoot().operators().getKeywords(nextLiteralChar()) :
-				parser.importRoot().operators().getOperators(nextLiteralChar());
+				parser.importDefinition().operators().getKeywords(nextLiteralChar()) :
+				parser.importDefinition().operators().getOperators(nextLiteralChar());
 		srcIndex = prev;
 		if(!set.isEmpty())
 			for(NameGroup o : set)

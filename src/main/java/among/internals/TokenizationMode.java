@@ -23,7 +23,7 @@ import among.internals.Token.TokenType;
  *
  * @see Tokenizer#next(boolean, TokenizationMode)
  */
-public enum TokenizationMode{
+enum TokenizationMode{
 	/**
 	 * Any encountered literals will produce {@link TokenType#ERROR ERROR}s.
 	 */

@@ -3,25 +3,13 @@ package among.internals;
 import among.AmongDefinition;
 import among.AmongEngine;
 import among.AmongRoot;
-import among.AmongWalker;
 import among.CompileResult;
-import among.NodePath;
 import among.Report;
 import among.ReportType;
 import among.RootAndDefinition;
 import among.Source;
-import among.TypeFlags;
 import among.macro.Macro;
-import among.macro.MacroDefinition;
-import among.macro.MacroParameter;
-import among.macro.MacroParameterList;
 import among.macro.MacroRegistry;
-import among.macro.MacroReplacement;
-import among.macro.MacroReplacement.MacroOp;
-import among.macro.MacroReplacement.MacroOp.MacroCall;
-import among.macro.MacroReplacement.MacroOp.NameReplacement;
-import among.macro.MacroReplacement.MacroOp.ValueReplacement;
-import among.macro.MacroSignature;
 import among.macro.MacroType;
 import among.obj.Among;
 import among.obj.AmongList;
@@ -34,14 +22,9 @@ import among.operator.OperatorRegistry;
 import among.operator.OperatorType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import static among.internals.Token.TokenType.*;
 
@@ -64,7 +47,7 @@ public final class Parser{
 	private final List<Report> reports = new ArrayList<>();
 
 	private boolean recovering;
-	@Nullable private ParsingMacro currentMacro;
+	@Nullable private ParserMacroBuilder currentMacro;
 
 	public Parser(Source source, AmongEngine engine, AmongRoot root, AmongDefinition importDefinition){
 		this.engine = engine;
@@ -77,7 +60,10 @@ public final class Parser{
 	public AmongEngine engine(){
 		return engine;
 	}
-	public AmongDefinition importRoot(){
+	public AmongDefinition definition(){
+		return definition;
+	}
+	public AmongDefinition importDefinition(){
 		return importDefinition;
 	}
 
@@ -197,7 +183,7 @@ public final class Parser{
 		}
 	}
 	private void macroDefinition(int startIndex, String name, MacroType type){
-		ParsingMacro m = new ParsingMacro(startIndex, name, type);
+		ParserMacroBuilder m = new ParserMacroBuilder(this, startIndex, name, type);
 		if(type!=MacroType.CONST&&type!=MacroType.ACCESS){
 			switch(type){
 				case OBJECT: case OBJECT_FN: macroParam(m, R_BRACE); break;
@@ -224,14 +210,14 @@ public final class Parser{
 		this.currentMacro = null;
 	}
 
-	private void macroParam(ParsingMacro macro, Token.TokenType closure){
+	private void macroParam(ParserMacroBuilder macro, Token.TokenType closure){
 		while(true){
 			Token next = tokenizer.next(true, TokenizationMode.PARAM_NAME);
 			if(next.is(closure)) break;
 			if(next.is(EOF)) break; // It will be reported in defMacro()
 			if(!next.is(PARAM_NAME)){
 				reportError("Expected parameter name");
-				macro.invalid = true;
+				macro.markInvalid();
 				if(tryToRecover(TokenizationMode.PARAM_NAME, closure, true)) break;
 				else continue;
 			}
@@ -249,7 +235,7 @@ public final class Parser{
 			if(next.is(closure)) break;
 			else if(!next.is(COMMA)){
 				reportError("Expected ',' or "+closure.friendlyName());
-				macro.invalid = true;
+				macro.markInvalid();
 				if(tryToRecover(TokenizationMode.PARAM_NAME, closure, true)) break;
 			}
 		}
@@ -867,192 +853,6 @@ public final class Parser{
 					this.recovering = prevRecovering;
 					return true;
 				}
-			}
-		}
-	}
-
-	private final class ParsingMacro{
-		private final int start;
-		private final String name;
-		private final MacroType type;
-		private final List<MacroParameter> params = new ArrayList<>();
-		private final List<Map.Entry<MacroOp, Among>> operationToTarget = new ArrayList<>();
-
-		@Nullable private List<Inference> typeInferences = null;
-
-		private boolean optionalParamSeen;
-		private boolean invalid;
-
-		private ParsingMacro(int start, String name, MacroType type){
-			this.start = start;
-			this.name = name;
-			this.type = type;
-			if(type.isFunctionMacro())
-				params.add(new MacroParameter("self", null));
-		}
-
-		public void newParam(String name, @Nullable Among defaultValue, int pos){
-			if(type==MacroType.CONST){
-				reportError("Constant macros cannot have parameters");
-				invalid = true;
-			}else if(type==MacroType.ACCESS){
-				reportError("Access macros cannot have parameters");
-				invalid = true;
-			}else if(paramIndex(name)>=0){
-				reportError(type.isFunctionMacro()&&"self".equals(name) ?
-						"Cannot define parameter named 'self' in function macros" :
-						"Duplicated parameter '"+name+"'.", pos);
-				invalid = true;
-			}else{
-				if(type==MacroType.LIST||type==MacroType.OPERATION||
-						type==MacroType.LIST_FN||type==MacroType.OPERATION_FN){
-					if(defaultValue==null){
-						if(optionalParamSeen){
-							reportError("Optional parameters of "+type.friendlyName()+
-									" macro should be consecutive, placed at end of the parameter list", pos);
-							invalid = true;
-						}
-					}else optionalParamSeen = true;
-				}
-				params.add(new MacroParameter(name, defaultValue));
-			}
-		}
-
-		public int paramIndex(String name){
-			for(int i = 0; i<params.size(); i++){
-				MacroParameter p = params.get(i);
-				if(p.name().equals(name)) return i;
-			}
-			return -1;
-		}
-
-		private Inference getTypeInference(int paramIndex){
-			if(typeInferences==null)
-				typeInferences = new ArrayList<>();
-			else for(Inference i : typeInferences){
-				if(i.index==paramIndex) return i;
-			}
-			Inference i = new Inference(paramIndex);
-			typeInferences.add(i);
-			return i;
-		}
-
-		public void inferTypeAs(int paramIndex, byte typeInference){
-			Inference i = getTypeInference(paramIndex);
-			if(i.type==0) return; // already reported
-			MacroParameter p = params.get(paramIndex);
-
-			byte newInference = (byte)(typeInference&i.type);
-			if(i.type!=typeInference){
-				if(newInference==0){
-					reportWarning("Parameter '"+p.name()+"' has no valid input: needs to satisfy both "+
-							TypeFlags.toString(i.type)+" AND "+TypeFlags.toString(typeInference));
-				}else if(p.defaultValue()!=null&&!TypeFlags.matches(newInference, p.defaultValue())){
-					reportWarning("Default value of the parameter '"+p.name()+"' is invalid");
-				}
-				i.type = newInference;
-			}
-		}
-
-		public boolean resolveParamRef(Among target){
-			String name;
-			if(target.isPrimitive()) name = target.asPrimitive().getValue();
-			else if(target.isNameable()) name = target.asNameable().getName();
-			else return false;
-			int i = paramIndex(name);
-			if(i<0) return false;
-			if(target.isNameable()) inferTypeAs(i, TypeFlags.PRIMITIVE);
-			if(!invalid)
-				operationToTarget.add(new SimpleEntry<>(
-						target.isPrimitive() ?
-								new ValueReplacement(i) :
-								new NameReplacement(i),
-						target));
-			return true;
-		}
-
-		public void resolveMacroCall(Macro macro, Among target){
-			operationToTarget.add(new SimpleEntry<>(new MacroCall(macro), target));
-		}
-
-		public void register(Among expr){
-			if(invalid) return;
-			invalid = true;
-			List<MacroReplacement> replacements = new ArrayList<>(this.operationToTarget.size());
-			expr.walk(new AmongWalker(){
-				@Override public void walk(AmongPrimitive primitive, NodePath path){
-					resolve(primitive, path);
-				}
-				@Override public void walkAfter(AmongObject object, NodePath path){
-					resolve(object, path);
-				}
-				@Override public void walkAfter(AmongList list, NodePath path){
-					resolve(list, path);
-				}
-				private void resolve(Among target, NodePath path){
-					for(Iterator<Map.Entry<MacroOp, Among>> it = operationToTarget.iterator(); it.hasNext(); ){
-						Map.Entry<MacroOp, Among> e = it.next();
-						if(e.getValue()==target){
-							replacements.add(new MacroReplacement(path, e.getKey()));
-							it.remove();
-							return;
-						}
-					}
-				}
-			});
-			if(!operationToTarget.isEmpty()){
-				reportError("Unresolved macro operation: "+
-						operationToTarget.stream().map(e -> e.getKey().toString()).collect(Collectors.joining(", ")), start);
-				return;
-			}
-			byte[] typeInferences;
-			if(this.typeInferences!=null){
-				typeInferences = new byte[params.size()];
-				Arrays.fill(typeInferences, TypeFlags.ANY);
-				for(Inference i : this.typeInferences){
-					typeInferences[i.index] = i.type;
-				}
-			}else typeInferences = null;
-			MacroDefinition macro = new MacroDefinition(new MacroSignature(name, type),
-					type.isFunctionMacro() ?
-							MacroParameterList.of(params.subList(1, params.size())) :
-							MacroParameterList.of(params),
-					expr, replacements, typeInferences);
-			importDefinition.macros().add(macro, (t, s) -> report(t, s, start));
-			definition.macros().add(macro);
-		}
-	}
-
-	private static final class Inference{
-		private final int index;
-		private byte type = TypeFlags.ANY;
-
-		private Inference(int index){
-			this.index = index;
-		}
-	}
-
-	private static final class TypeAndProperty{
-		private final OperatorType type;
-		private final byte properties;
-		private final double priority;
-
-		private TypeAndProperty(OperatorType type, byte properties, double priority){
-			this.type = type;
-			this.properties = properties;
-			this.priority = priority;
-		}
-	}
-
-	private enum OperatorPropertyEnum{
-		LEFT_ASSOCIATIVE, RIGHT_ASSOCIATIVE, ACCESSOR;
-
-		@Override public String toString(){
-			switch(this){
-				case LEFT_ASSOCIATIVE: return "left-associative";
-				case RIGHT_ASSOCIATIVE: return "right-associative";
-				case ACCESSOR: return "accessor";
-				default: throw new IllegalStateException("Unreachable");
 			}
 		}
 	}

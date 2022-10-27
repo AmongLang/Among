@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class FormatLib{
+final class FormatLib{
 	private FormatLib(){}
 
 	private static final Pattern FORMAT_REGEX = Pattern.compile("\\{\\{}}|\\{((?:\\\\.|[^}])*)}");

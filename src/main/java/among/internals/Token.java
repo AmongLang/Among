@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Individual unit of source code, produced by {@link Tokenizer}.
  */
-public final class Token{
+final class Token{
 	public final TokenType type;
 	public final int start;
 	public final @Nullable String literal;
