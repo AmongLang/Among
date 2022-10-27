@@ -52,7 +52,7 @@ public final class Report{
 	public void print(Source source, Consumer<String> logger){
 		LnCol lc = getLineColumn(source);
 
-		logger.accept(lc!=null ? "["+lc+"] "+message : message);
+		logger.accept((lc!=null ? "["+lc+"] " : "")+type.toString()+": "+message);
 		if(exception!=null){
 			logger.accept(exception.toString());
 			exception.printStackTrace();
