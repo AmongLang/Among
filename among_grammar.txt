@@ -46,7 +46,7 @@ nameable: ( value | complexPrimitive )?
 
 obj: key BR* ":" expr (  ( BR+ | BR* "," BR* ) obj? )?
 list: expr ( ( BR+ | BR* "," BR* ) list? )?
-oper: operExpr ( BR* "," BR* operExpr? )?
+oper: operExpr ( ( BR+ | BR* "," BR* ) operExpr? )?
 
 # OPERATORS
 
