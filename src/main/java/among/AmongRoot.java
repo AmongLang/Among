@@ -5,13 +5,16 @@ import among.obj.Among;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 
 /**
  * Represents all values defined in single source.
  */
-public final class AmongRoot extends ToPrettyString.Base{
+public final class AmongRoot extends ToPrettyString.Base implements Iterable<Among>{
 	private final List<Among> values;
 
 	/**
@@ -68,6 +71,16 @@ public final class AmongRoot extends ToPrettyString.Base{
 	 */
 	public AmongRoot copy(){
 		return new AmongRoot(this);
+	}
+
+	@Override public Iterator<Among> iterator(){
+		return this.values.iterator();
+	}
+	@Override public void forEach(Consumer<? super Among> action){
+		this.values.forEach(action);
+	}
+	@Override public Spliterator<Among> spliterator(){
+		return this.values.spliterator();
 	}
 
 	@Override public void toString(StringBuilder stb, ToStringOption option, ToStringContext context){
