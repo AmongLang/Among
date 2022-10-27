@@ -71,7 +71,7 @@ public final class Parser{
 		try{
 			among();
 		}catch(RuntimeException ex){
-			reportError("Unexpected error", ex);
+			report(ReportType.ERROR, "Unexpected error", ex);
 		}
 		return new CompileResult(tokenizer.source(), root, definition, reports);
 	}
@@ -128,13 +128,11 @@ public final class Parser{
 	 * Checks if there's appropriate statement end; if not, tokens are discarded until a statement end is found.
 	 *
 	 * @param errorMessage Error message to report if statement end is missing
-	 * @return Whether there is appropriate statement end
 	 */
-	private boolean expectStmtEnd(String errorMessage){
-		if(stmtEnd()) return true;
+	private void expectStmtEnd(String errorMessage){
+		if(stmtEnd()) return;
 		reportError(errorMessage);
 		tryToRecover(TokenizationMode.UNEXPECTED, null, true, true);
-		return false;
 	}
 
 	/**
@@ -769,17 +767,11 @@ public final class Parser{
 	void reportWarning(String message, int srcIndex, String... hints){
 		report(ReportType.WARN, message, srcIndex, hints);
 	}
-	void reportWarning(String message, @Nullable Throwable ex, String... hints){
-		report(ReportType.WARN, message, ex, hints);
-	}
 	void reportError(String message, String... hints){
 		report(ReportType.ERROR, message, hints);
 	}
 	void reportError(String message, int srcIndex, String... hints){
 		report(ReportType.ERROR, message, srcIndex, hints);
-	}
-	void reportError(String message, @Nullable Throwable ex, String... hints){
-		report(ReportType.ERROR, message, ex, hints);
 	}
 
 	void report(ReportType type, String message, String... hints){
