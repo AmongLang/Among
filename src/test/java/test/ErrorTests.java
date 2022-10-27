@@ -19,6 +19,7 @@ public class ErrorTests{
 		list.add(errorTest("invalidStatement"));
 		list.add(errorTest("redundantComma"));
 		list.add(errorTest("wtf"));
+		list.add(errorTest("overlapWarn"));
 		return list;
 	}
 

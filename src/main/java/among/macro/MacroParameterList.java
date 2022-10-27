@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Immutable list of {@link MacroParameter}s. Provides both search-by-index and search-by-name functionality.
@@ -70,6 +71,9 @@ public final class MacroParameterList extends ToPrettyString.Base{
 	}
 
 	/**
+	 * Returns unmodifiable view of all parameter names mapped to their respective index. Iteration order is not
+	 * guaranteed to be same with declaration order.
+	 *
 	 * @return Unmodifiable view of all parameter names mapped to their respective index
 	 */
 	public Map<String, Integer> parameters(){
@@ -77,6 +81,8 @@ public final class MacroParameterList extends ToPrettyString.Base{
 	}
 
 	/**
+	 * Returns parameter declared at specific index.
+	 *
 	 * @param index Index of the parameter
 	 * @return Parameter at specified index
 	 * @throws IndexOutOfBoundsException If {@code index < 0 || index >= size()}
@@ -85,6 +91,9 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return params.get(index);
 	}
 	/**
+	 * Searches for index of parameter with given name. If there is no parameter with given name, {@code index} is
+	 * returned.
+	 *
 	 * @param paramName Name of the parameter
 	 * @return Index of the parameter with given name, or {@code -1} if there isn't
 	 * @throws NullPointerException If {@code paramName == null}
@@ -94,6 +103,11 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return i!=null ? i : -1;
 	}
 
+	/**
+	 * Returns whether this parameter list contains at least one optional parameter.
+	 *
+	 * @return Whether this parameter list contains at least one optional parameter
+	 */
 	public boolean hasOptionalParams(){
 		for(MacroParameter p : params)
 			if(p.defaultValue()!=null) return true;
@@ -140,20 +154,52 @@ public final class MacroParameterList extends ToPrettyString.Base{
 		return true;
 	}
 
-	private int requiredParameterSize = -1;
+	/**
+	 * Returns stream containing only required parameters, i.e. parameters without default value.
+	 *
+	 * @return Stream of required parameters
+	 */
+	public Stream<MacroParameter> requiredParameters(){
+		return this.params.stream().filter(p -> p.defaultValue()==null);
+	}
+
+	/**
+	 * Returns stream containing only optional parameters, i.e. parameters with default value.
+	 *
+	 * @return Stream of optional parameters
+	 */
+	public Stream<MacroParameter> optionalParameters(){
+		return this.params.stream().filter(p -> p.defaultValue()!=null);
+	}
+
+	private int requiredParameterSize = -1, optionalParameterSize = -1;
 
 	/**
 	 * Returns number of required parameters. Optional parameters are not counted.
 	 *
 	 * @return Number of required parameters
 	 */
-	public int requiredParameters(){
+	public int requiredParameterSize(){
 		if(requiredParameterSize<0){
 			requiredParameterSize = 0;
 			for(MacroParameter p : this.params)
 				if(p.defaultValue()==null) requiredParameterSize++;
 		}
 		return requiredParameterSize;
+	}
+
+	/**
+	 * Returns number of optional parameters. Required parameters are not counted.
+	 *
+	 * @return Number of optional parameters
+	 */
+	public int optionalParameterSize(){
+		if(optionalParameterSize<0){
+			optionalParameterSize = 0;
+			for(MacroParameter p : this.params)
+				if(p.defaultValue()!=null) optionalParameterSize++;
+		}
+		return optionalParameterSize;
 	}
 
 	@Override public boolean equals(Object o){

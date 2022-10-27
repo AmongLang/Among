@@ -1,0 +1,28 @@
+
+macro m[a, b, c]: macro
+macro m[a, b, c = default, d = default]: macro
+
+m[1, 2]
+m[1, 2, 3, 4]
+m[1, 2, 3]
+
+macro m{a, b}: macro
+macro m{a, c}: macro
+
+m{a:1, b:2}
+m{a:1, c:2}
+m{a:1, b:2, c:3}
+
+macro m2{a, b}: macro
+macro m2{a, b, c = default}: macro
+
+m2{a:1, b:2}
+m2{a:1, c:2}
+m2{a:1, b:2, c:3}
+
+macro m3{a, b}: macro
+macro m3{a, b, c}: macro
+
+m3{a:1, b:2}
+m3{a:1, b:2, c:3}
+m3{a:1, b:2, c:3, d:4}

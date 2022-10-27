@@ -12,12 +12,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class MacroRegistry{
@@ -217,16 +217,16 @@ public final class MacroRegistry{
 			return searchInternal(argument.asList(), reportHandler);
 		}
 		@Override protected int match(Macro macro, AmongList args){
-			if(args.size()<macro.parameter().requiredParameters()) return -1;
+			if(args.size()<macro.parameter().requiredParameterSize()) return -1;
 			return Math.max(0, args.size()-macro.parameter().size());
 		}
 		@Override protected boolean overwrites(Macro newMacro, Macro existingMacro){
 			return newMacro.parameter().size()==existingMacro.parameter().size()&&
-					newMacro.parameter().requiredParameters()==existingMacro.parameter().requiredParameters();
+					newMacro.parameter().requiredParameterSize()==existingMacro.parameter().requiredParameterSize();
 		}
 		@Override protected boolean isParameterOverlaps(Macro newMacro, Macro existingMacro){
-			int aMin = newMacro.parameter().requiredParameters(), aMax = newMacro.parameter().size();
-			int bMin = existingMacro.parameter().requiredParameters(), bMax = existingMacro.parameter().size();
+			int aMin = newMacro.parameter().requiredParameterSize(), aMax = newMacro.parameter().size();
+			int bMin = existingMacro.parameter().requiredParameterSize(), bMax = existingMacro.parameter().size();
 			return aMax>=bMin&&bMax>=aMin;
 		}
 	}
@@ -236,7 +236,7 @@ public final class MacroRegistry{
 			return searchInternal(argument.asObj(), reportHandler);
 		}
 		@Override protected int match(Macro macro, AmongObject args){
-			if(args.size()<macro.parameter().requiredParameters()) return -1;
+			if(args.size()<macro.parameter().requiredParameterSize()) return -1;
 			int defaultArgsProvided = 0;
 			for(int i = 0; i<macro.parameter().size(); i++){
 				MacroParameter p = macro.parameter().paramAt(i);
@@ -244,15 +244,15 @@ public final class MacroRegistry{
 					if(!args.hasProperty(p.name())) return -1;
 				}else if(args.hasProperty(p.name())) defaultArgsProvided++;
 			}
-			return Math.max(0, args.size()-macro.parameter().requiredParameters()-defaultArgsProvided);
+			return Math.max(0, args.size()-macro.parameter().requiredParameterSize()-defaultArgsProvided);
 		}
 		@Override protected boolean overwrites(Macro newMacro, Macro existingMacro){
 			return newMacro.parameter().parameters().equals(existingMacro.parameter().parameters());
 		}
 		@Override protected boolean isParameterOverlaps(Macro newMacro, Macro existingMacro){
-			Set<String> names = new HashSet<>(newMacro.parameter().parameters().keySet());
-			names.retainAll(existingMacro.parameter().parameters().keySet());
-			return !names.isEmpty();
+			Set<String> s1 = newMacro.parameter().requiredParameters().map(MacroParameter::name).collect(Collectors.toSet());
+			Set<String> s2 = existingMacro.parameter().requiredParameters().map(MacroParameter::name).collect(Collectors.toSet());
+			return s1.equals(s2);
 		}
 	}
 

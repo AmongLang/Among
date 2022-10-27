@@ -228,9 +228,9 @@ public abstract class Macro extends ToPrettyString.Base{
 			return null;
 		}
 		AmongList l = argument.asList();
-		if(l.size()<parameter().requiredParameters()){
+		if(l.size()<parameter().requiredParameterSize()){
 			if(reportHandler!=null) reportHandler.accept(ReportType.ERROR,
-					"Not enough parameters: minimum of "+parameter().requiredParameters()+" expected, "+l.size()+" provided");
+					"Not enough parameters: minimum of "+parameter().requiredParameterSize()+" expected, "+l.size()+" provided");
 			return null;
 		}else{
 			if(l.size()>parameter().size()&&reportHandler!=null){
