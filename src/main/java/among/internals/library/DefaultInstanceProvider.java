@@ -3,7 +3,6 @@ package among.internals.library;
 import among.AmongDefinition;
 import among.AmongEngine;
 import among.Provider;
-import among.ReportType;
 import among.RootAndDefinition;
 import among.TypeFlags;
 import among.macro.Macro;
@@ -164,7 +163,7 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 						String key = args[1].asPrimitive().getValue();
 						Among a = args[0].asObj().getProperty(key);
 						if(a==null&&reportHandler!=null)
-							reportHandler.accept(ReportType.ERROR, "No property '"+key+"' in object");
+							reportHandler.reportError("No property '"+key+"' in object");
 						return a;
 					}else{
 						AmongList l = args[0].asList();
@@ -172,9 +171,10 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 							int i = args[1].asPrimitive().getIntValue();
 							if(i>=0&&i<l.size()) return l.get(i);
 							if(reportHandler!=null)
-								reportHandler.accept(ReportType.ERROR, "Index out of range ("+i+", size = "+l.size()+")");
+								reportHandler.reportError("Index out of range ("+i+", size = "+l.size()+")");
 						}catch(NumberFormatException ex){
-							if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Expected int");
+							if(reportHandler!=null)
+								reportHandler.reportError("Expected int", args[1].sourcePosition());
 						}
 					}
 					return null;
@@ -193,7 +193,8 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 						AmongList l = args[0].asList();
 						return i>=0&&i<l.size() ? l.get(i) : args[2];
 					}catch(NumberFormatException ex){
-						if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Expected int");
+						if(reportHandler!=null)
+							reportHandler.reportError("Expected int", args[1].sourcePosition());
 						return null;
 					}
 				}));
@@ -222,9 +223,10 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 							return l;
 						}
 						if(reportHandler!=null)
-							reportHandler.accept(ReportType.ERROR, "Index out of range ("+i+", size = "+args[0].asList().size()+")");
+							reportHandler.reportError("Index out of range ("+i+", size = "+args[0].asList().size()+")");
 					}catch(NumberFormatException ex){
-						if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Expected int");
+						if(reportHandler!=null)
+							reportHandler.reportError("Expected int", args[1].sourcePosition());
 					}
 					return null;
 				}));
@@ -246,9 +248,10 @@ public final class DefaultInstanceProvider implements Provider<RootAndDefinition
 							return l;
 						}
 						if(reportHandler!=null)
-							reportHandler.accept(ReportType.ERROR, "Index out of range ("+i+", size = "+args[0].asList().size()+")");
+							reportHandler.reportError("Index out of range ("+i+", size = "+args[0].asList().size()+")");
 					}catch(NumberFormatException ex){
-						if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Expected int");
+						if(reportHandler!=null)
+							reportHandler.reportError("Expected int", args[1].sourcePosition());
 					}
 					return null;
 				}));

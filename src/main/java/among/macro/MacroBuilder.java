@@ -1,6 +1,6 @@
 package among.macro;
 
-import among.ReportType;
+import among.ReportHandler;
 import among.ToStringOption;
 import among.TypeFlags;
 import among.exception.Sussy;
@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * Builder for {@link MacroDefinition}.
@@ -139,7 +138,7 @@ public final class MacroBuilder{
 		 *                              might not throw an exception
 		 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 		 */
-		@Nullable Among applyMacro(Among[] args, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler);
+		@Nullable Among applyMacro(Among[] args, boolean copyConstant, @Nullable ReportHandler reportHandler);
 	}
 
 	public static final class CustomMacro extends Macro{
@@ -150,7 +149,7 @@ public final class MacroBuilder{
 			this.function = Objects.requireNonNull(function);
 		}
 
-		@Override @Nullable protected Among applyMacro(Among[] args, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override @Nullable protected Among applyMacro(Among[] args, boolean copyConstant, @Nullable ReportHandler reportHandler){
 			return function.applyMacro(args, copyConstant, reportHandler);
 		}
 		@Override protected void macroBodyToString(StringBuilder stb, ToStringOption option){

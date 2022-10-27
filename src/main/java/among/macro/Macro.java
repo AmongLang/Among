@@ -1,6 +1,6 @@
 package among.macro;
 
-import among.ReportType;
+import among.ReportHandler;
 import among.ToPrettyString;
 import among.ToStringContext;
 import among.ToStringOption;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * Base class for both user-defined macro and code-defined macro.
@@ -84,7 +83,7 @@ public abstract class Macro extends ToPrettyString.Base{
 	 *                              might not throw an exception
 	 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 	 * @see Macro#apply(Among, boolean)
-	 * @see Macro#apply(Among, boolean, BiConsumer)
+	 * @see Macro#apply(Among, boolean, ReportHandler)
 	 */
 	public final Among apply(Among argument){
 		return apply(argument, true);
@@ -112,7 +111,7 @@ public abstract class Macro extends ToPrettyString.Base{
 	 * @throws NullPointerException If {@code argument == null}. Note that if the macro is argument-independent, it
 	 *                              might not throw an exception
 	 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
-	 * @see Macro#apply(Among, boolean, BiConsumer)
+	 * @see Macro#apply(Among, boolean, ReportHandler)
 	 */
 	@Nullable public final Among apply(Among argument, boolean copyConstant){
 		return apply(argument, copyConstant, null);
@@ -143,7 +142,7 @@ public abstract class Macro extends ToPrettyString.Base{
 	 *                              might not throw an exception
 	 * @throws RuntimeException     If an unexpected error occurs. The exception should be reported back as error.
 	 */
-	@Nullable public final Among apply(Among argument, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable public final Among apply(Among argument, boolean copyConstant, @Nullable ReportHandler reportHandler){
 		Among[] args = toArgs(argument, reportHandler);
 		if(args==null) return null;
 		if(typeInferences!=null){
@@ -154,7 +153,7 @@ public abstract class Macro extends ToPrettyString.Base{
 						int actualParamIndex = type().isFunctionMacro() ? i-1 : i;
 						String paramName = actualParamIndex>=0&&actualParamIndex<this.parameter.size() ?
 								this.parameter.paramAt(actualParamIndex).name() : "self";
-						reportHandler.accept(ReportType.ERROR,
+						reportHandler.reportError(
 								"Type of argument '"+paramName+"' does not match its inferred type.\n"+
 										"  Expected type: "+TypeFlags.toString(this.typeInferences[i])+"\n"+
 										"  Supplied argument: "+TypeFlags.toString(TypeFlags.from(args[i])));
@@ -166,9 +165,9 @@ public abstract class Macro extends ToPrettyString.Base{
 		}
 		return applyMacro(args, copyConstant, reportHandler);
 	}
-	@Nullable protected abstract Among applyMacro(Among[] args, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler);
+	@Nullable protected abstract Among applyMacro(Among[] args, boolean copyConstant, @Nullable ReportHandler reportHandler);
 
-	@Nullable private Among[] toArgs(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private Among[] toArgs(Among argument, @Nullable ReportHandler reportHandler){
 		switch(this.type()){
 			case CONST: return new Among[0];
 			case OBJECT: return objectMacro(argument, reportHandler, null);
@@ -179,14 +178,14 @@ public abstract class Macro extends ToPrettyString.Base{
 					int requiredSize = this.type()==MacroType.ACCESS ? 1 : 2;
 					if(l.size()>=requiredSize){
 						if(l.size()>requiredSize&&reportHandler!=null)
-							reportHandler.accept(ReportType.WARN, "Unused function parameters: "+l.size()+" provided");
+							reportHandler.reportWarning("Unused function parameters: "+l.size()+" provided");
 						Among self = l.get(0);
 						return this.type()==MacroType.ACCESS ? new Among[]{self} :
 								this.type()==MacroType.OBJECT_FN ? objectMacro(l.get(1), reportHandler, self) :
 										listMacro(l.get(1), reportHandler, self);
 					}
 				}
-				if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, this.type()==MacroType.ACCESS ?
+				if(reportHandler!=null) reportHandler.reportError(this.type()==MacroType.ACCESS ?
 						"Expected 'self' as argument" :
 						"Expected pair of 'self' and 'args' as argument");
 				return null;
@@ -194,9 +193,9 @@ public abstract class Macro extends ToPrettyString.Base{
 		}
 	}
 
-	@Nullable private Among[] objectMacro(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler, @Nullable Among self){
+	@Nullable private Among[] objectMacro(Among argument, @Nullable ReportHandler reportHandler, @Nullable Among self){
 		if(!argument.isObj()){
-			if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Expected object as argument");
+			if(reportHandler!=null) reportHandler.reportError("Expected object as argument");
 			return null;
 		}
 		AmongObject o = argument.asObj();
@@ -208,7 +207,7 @@ public abstract class Macro extends ToPrettyString.Base{
 			if(val==null){
 				if(p.defaultValue()!=null) val = p.defaultValue();
 				else{
-					if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Missing argument '"+p.name()+'\'');
+					if(reportHandler!=null) reportHandler.reportError("Missing argument '"+p.name()+'\'');
 					else return null;
 					args = null;
 				}
@@ -218,23 +217,23 @@ public abstract class Macro extends ToPrettyString.Base{
 		if(reportHandler!=null)
 			for(String key : argument.asObj().properties().keySet())
 				if(this.parameter().indexOf(key)==-1)
-					reportHandler.accept(ReportType.WARN, "Unused argument '"+key+'\'');
+					reportHandler.reportWarning("Unused argument '"+key+'\'');
 		return args!=null ? args.toArray(new Among[0]) : null;
 	}
 
-	@Nullable private Among[] listMacro(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler, @Nullable Among self){
+	@Nullable private Among[] listMacro(Among argument, @Nullable ReportHandler reportHandler, @Nullable Among self){
 		if(!argument.isList()){
-			if(reportHandler!=null) reportHandler.accept(ReportType.ERROR, "Expected list as argument");
+			if(reportHandler!=null) reportHandler.reportError("Expected list as argument");
 			return null;
 		}
 		AmongList l = argument.asList();
 		if(l.size()<parameter().requiredParameterSize()){
-			if(reportHandler!=null) reportHandler.accept(ReportType.ERROR,
+			if(reportHandler!=null) reportHandler.reportError(
 					"Not enough parameters: minimum of "+parameter().requiredParameterSize()+" expected, "+l.size()+" provided");
 			return null;
 		}else{
 			if(l.size()>parameter().size()&&reportHandler!=null){
-				reportHandler.accept(ReportType.WARN,
+				reportHandler.reportWarning(
 						"Unused parameters: maximum of "+parameter().size()+" expected, "+l.size()+" provided");
 			}
 			List<Among> args = new ArrayList<>();

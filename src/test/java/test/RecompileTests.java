@@ -176,8 +176,8 @@ public class RecompileTests{
 	private static void recompileTest(Macro... original){
 		AmongDefinition root = new AmongDefinition();
 		for(Macro v : original){
-			root.macros().add(v, (reportType, s) -> {
-				throw new Sussy(s);
+			root.macros().add(v, (type, message, srcIndex, ex, hints) -> {
+				throw new Sussy(message);
 			});
 		}
 		System.out.println("========== Original ==========");

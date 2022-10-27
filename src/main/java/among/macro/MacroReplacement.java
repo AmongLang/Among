@@ -1,13 +1,12 @@
 package among.macro;
 
 import among.NodePath;
-import among.ReportType;
+import among.ReportHandler;
 import among.exception.Sussy;
 import among.obj.Among;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * Object representing one replacement operation.
@@ -51,7 +50,7 @@ public final class MacroReplacement{
 	 * @param reportHandler Optional report handler
 	 * @return Object after replacement; it will just return {@code target} most of the time
 	 */
-	public Among apply(Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+	public Among apply(Among[] args, Among target, boolean copyConstant, @Nullable ReportHandler reportHandler){
 		return operation.applyTo(path, args, target, copyConstant, reportHandler);
 	}
 
@@ -76,7 +75,7 @@ public final class MacroReplacement{
 		 * @param reportHandler Optional report handler
 		 * @return Object after replacement; it will just return {@code target} most of the time
 		 */
-		public abstract Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler);
+		public abstract Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable ReportHandler reportHandler);
 
 		public static final class ValueReplacement extends MacroOp{
 			private final int param;
@@ -89,7 +88,7 @@ public final class MacroReplacement{
 				return param;
 			}
 
-			@Override public Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+			@Override public Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable ReportHandler reportHandler){
 				if(path.isEmpty()) return args[this.param];
 				if(!path.resolveAndSet(target, args[this.param]))
 					throw new Sussy("No replacement target");
@@ -114,7 +113,7 @@ public final class MacroReplacement{
 				return param;
 			}
 
-			@Override public Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+			@Override public Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable ReportHandler reportHandler){
 				Among resolved = path.resolveAndGet(target);
 				if(resolved==null) throw new Sussy("No replacement target");
 				resolved.asNameable().setName(args[this.param].asPrimitive().getValue());
@@ -139,7 +138,7 @@ public final class MacroReplacement{
 				return macro;
 			}
 
-			@Override public Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+			@Override public Among applyTo(NodePath path, Among[] args, Among target, boolean copyConstant, @Nullable ReportHandler reportHandler){
 				if(path.isEmpty()) return macro.apply(target);
 				Among among = path.resolveAndGet(target);
 				if(among==null) throw new Sussy("No replacement target");

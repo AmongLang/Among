@@ -34,8 +34,8 @@ public class CopyTests{
 		def.macros().add(Macro.builder("This is macro", MacroType.CONST)
 				.build(object()
 						.prop("P1", "1")
-						.prop("P2", "2")), (t, s) -> {
-			throw new Sussy(s);
+						.prop("P2", "2")), (type, message, srcIndex, ex, hints) -> {
+			throw new Sussy(message);
 		});
 		def.macros().add(Macro.builder("Macro2", MacroType.OBJECT)
 				.param("p1")

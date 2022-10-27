@@ -5,6 +5,7 @@ import among.AmongEngine;
 import among.AmongRoot;
 import among.CompileResult;
 import among.Report;
+import among.ReportHandler;
 import among.ReportType;
 import among.RootAndDefinition;
 import among.Source;
@@ -31,7 +32,7 @@ import static among.internals.Token.TokenType.*;
 /**
  * Eats token. Shits object. Crazy.
  */
-public final class Parser{
+public final class Parser implements ReportHandler{
 	private final AmongRoot root;
 	/**
 	 * Macros and operators defined or imported with {@code use public} statement. Will be returned as compilation
@@ -117,6 +118,7 @@ public final class Parser{
 							continue;
 						}
 						a = Among.value(next.expectLiteral());
+						a.setSourcePosition(next.start);
 					}
 					root.add(a);
 					stmtEnd();
@@ -424,7 +426,7 @@ public final class Parser{
 	}
 
 	private void copyDefinitions(AmongDefinition from, AmongDefinition to, boolean report, int startIndex){
-		from.macros().allMacros().forEach(m -> to.macros().add(m, report ? (t, s) -> report(t, s, startIndex) : null));
+		from.macros().allMacros().forEach(m -> to.macros().add(m, report ? reportAt(startIndex) : null));
 		from.operators().allOperators().forEach(o -> {
 			OperatorRegistry.RegistrationResult r = to.operators().add(o);
 			if(report&&!r.isSuccess()&&r!=OperatorRegistry.RegistrationResult.IDENTICAL_DUPLICATE)
@@ -455,6 +457,7 @@ public final class Parser{
 			return null;
 		}
 		AmongPrimitive p = Among.value(next.expectLiteral());
+		p.setSourcePosition(next.start);
 		return next.is(QUOTED_PRIMITIVE)||resolveParamRef(p) ? p : primitiveMacro(p, next.start);
 	}
 
@@ -466,10 +469,10 @@ public final class Parser{
 		tokenizer.discard();
 		Token next = tokenizer.next(true, operation ? TokenizationMode.OPERATION : TokenizationMode.VALUE);
 		switch(next.type){
-			case L_BRACE: return obj(null);
-			case L_BRACKET: return list(null);
+			case L_BRACE: return obj(null, next.start);
+			case L_BRACKET: return list(null, next.start);
 			case L_PAREN:{
-				AmongList o = oper(null);
+				AmongList o = oper(null, next.start);
 				return o.size()==1 ? o.get(0) : o;
 			}
 			default:
@@ -477,15 +480,15 @@ public final class Parser{
 					// lookahead to find if it's nameable instance
 					switch(tokenizer.next(operation, TokenizationMode.UNEXPECTED).type){
 						case L_BRACE:{
-							AmongObject o = obj(next.expectLiteral());
+							AmongObject o = obj(next.expectLiteral(), next.start);
 							return next.is(QUOTED_PRIMITIVE)||resolveParamRef(o) ? o : objectMacro(o, next.start);
 						}
 						case L_BRACKET:{
-							AmongList l = list(next.expectLiteral());
+							AmongList l = list(next.expectLiteral(), next.start);
 							return next.is(QUOTED_PRIMITIVE)||resolveParamRef(l) ? l : listMacro(l, next.start);
 						}
 						case L_PAREN:{
-							AmongList o = oper(next.expectLiteral());
+							AmongList o = oper(next.expectLiteral(), next.start);
 							return next.is(QUOTED_PRIMITIVE)||resolveParamRef(o) ? o : operationMacro(o, next.start);
 						}
 						default: tokenizer.reset(true); return null;
@@ -496,8 +499,9 @@ public final class Parser{
 		}
 	}
 
-	private AmongObject obj(@Nullable String name){
+	private AmongObject obj(@Nullable String name, int startIndex){
 		AmongObject object = Among.namedObject(name);
+		object.setSourcePosition(startIndex);
 		L:
 		while(true){
 			Token keyToken = tokenizer.next(true, TokenizationMode.KEY);
@@ -545,8 +549,9 @@ public final class Parser{
 		return object;
 	}
 
-	private AmongList list(@Nullable String name){
+	private AmongList list(@Nullable String name, int startIndex){
 		AmongList list = Among.namedList(name);
+		list.setSourcePosition(startIndex);
 		L:
 		while(true){
 			tokenizer.discard();
@@ -578,8 +583,9 @@ public final class Parser{
 		return list;
 	}
 
-	private AmongList oper(@Nullable String name){
+	private AmongList oper(@Nullable String name, int startIndex){
 		AmongList list = Among.namedList(name);
+		list.setSourcePosition(startIndex);
 		list.setOperation(true);
 		L:
 		while(true){
@@ -632,6 +638,7 @@ public final class Parser{
 			return Among.value("ERROR");
 		}
 		AmongPrimitive p = Among.value(next.expectLiteral());
+		p.setSourcePosition(next.start);
 		return next.is(QUOTED_PRIMITIVE)||resolveParamRef(p) ? p : primitiveMacro(p, next.start);
 	}
 
@@ -646,17 +653,21 @@ public final class Parser{
 					Among b = operationExpression(operators, i+1);
 					if(op.hasProperty(OperatorProperty.ACCESSOR)){
 						if(b.isPrimitive()){
-							a = accessMacro(Among.namedList(op.aliasOrName()+b.asPrimitive().getValue(), a), next.start);
+							AmongList l = Among.namedList(op.aliasOrName()+b.asPrimitive().getValue(), a);
+							l.setSourcePosition(next.start);
+							a = accessMacro(l, next.start);
 						}else{
 							AmongNameable b2 = b.asNameable().copy();
 							b2.setName("");
 							AmongList call = Among.namedList(op.aliasOrName()+b.asNameable().getName(), a, b2);
+							call.setSourcePosition(next.start);
 							a = b.isObj() ? objectFnMacro(call, next.start) :
 									b.asList().isOperation() ? operationFnMacro(call, next.start) :
 											listFnMacro(call, next.start);
 						}
 					}else{
 						AmongList list = Among.namedList(op.aliasOrName(), a, b);
+						list.setSourcePosition(next.start);
 						list.setOperation(true);
 						a = operationMacro(list, next.start);
 					}
@@ -676,6 +687,7 @@ public final class Parser{
 			OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 			if(op!=null){
 				AmongList list = Among.namedList(op.aliasOrName(), a, rightAssociativeBinary(operators, i));
+				list.setSourcePosition(next.start);
 				list.setOperation(true);
 				return operationMacro(list, next.start);
 			}
@@ -693,6 +705,7 @@ public final class Parser{
 				OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 				if(op!=null){
 					AmongList list = Among.namedList(op.aliasOrName(), a);
+					list.setSourcePosition(next.start);
 					list.setOperation(true);
 					a = operationMacro(list, next.start);
 					continue;
@@ -710,6 +723,7 @@ public final class Parser{
 			OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 			if(op!=null){
 				AmongList list = Among.namedList(op.aliasOrName(), prefix(operators, i));
+				list.setSourcePosition(next.start);
 				list.setOperation(true);
 				return operationMacro(list, next.start);
 			}
@@ -745,14 +759,14 @@ public final class Parser{
 	private Among macro(Among target, String macroName, MacroType macroType, int sourcePosition){
 		MacroRegistry.Group g = importDefinition.macros().groupFor(macroName, macroType);
 		if(g==null) return target;
-		Macro macro = g.search(target, (t, s) -> report(t, s, sourcePosition));
+		Macro macro = g.search(target, reportAt(sourcePosition));
 		if(macro!=null){
 			if(currentMacro!=null){
 				currentMacro.resolveMacroCall(macro, target);
 				return target;
 			}
 			try{
-				Among among = macro.apply(target, engine.copyMacroConstant, (t, s) -> report(t, s, sourcePosition));
+				Among among = macro.apply(target, engine.copyMacroConstant, reportAt(sourcePosition));
 				if(among!=null) return among;
 			}catch(RuntimeException ex){
 				report(ReportType.ERROR, "Unexpected error on macro processing", sourcePosition, ex);
@@ -761,32 +775,14 @@ public final class Parser{
 		return Among.value("ERROR");
 	}
 
-	void reportWarning(String message, String... hints){
-		report(ReportType.WARN, message, hints);
-	}
-	void reportWarning(String message, int srcIndex, String... hints){
-		report(ReportType.WARN, message, srcIndex, hints);
-	}
-	void reportError(String message, String... hints){
-		report(ReportType.ERROR, message, hints);
-	}
-	void reportError(String message, int srcIndex, String... hints){
-		report(ReportType.ERROR, message, srcIndex, hints);
-	}
-
-	void report(ReportType type, String message, String... hints){
-		report(type, message, null, hints);
-	}
-	void report(ReportType type, String message, int srcIndex, String... hints){
-		report(type, message, srcIndex, null, hints);
-	}
-
-	void report(ReportType type, String message, @Nullable Throwable ex, String... hints){
-		Token lastToken = tokenizer.lastToken();
-		report(type, message, lastToken!=null ? lastToken.start : -1, ex, hints);
-	}
-	void report(ReportType type, String message, int srcIndex, @Nullable Throwable ex, String... hints){
-		if(!recovering) reports.add(new Report(type, message, srcIndex, ex, hints));
+	@Override public void report(ReportType type, String message, int srcIndex, @Nullable Throwable ex, String... hints){
+		if(!recovering){
+			if(srcIndex<0){
+				Token lastToken = tokenizer.lastToken();
+				if(lastToken!=null) srcIndex = lastToken.start;
+			}
+			reports.add(new Report(type, message, srcIndex, ex, hints));
+		}
 	}
 
 	private void skipUntilLineBreak(){

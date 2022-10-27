@@ -1,17 +1,15 @@
 package among.internals.library;
 
-import among.ReportType;
+import among.ReportHandler;
 import among.exception.Sussy;
 import among.obj.Among;
 import among.obj.AmongList;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.BiConsumer;
-
 final class EvalLib{
 	private EvalLib(){}
 
-	@Nullable public static Among eval(Among among, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable public static Among eval(Among among, @Nullable ReportHandler reportHandler){
 		if(among.isList()){
 			AmongList list = among.asList();
 			switch(list.getName()){
@@ -37,7 +35,7 @@ final class EvalLib{
 	}
 
 	private enum BinaryObjOp{EQ, NEQ}
-	@Nullable private static Among binaryObj(AmongList list, BinaryObjOp op, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private static Among binaryObj(AmongList list, BinaryObjOp op, @Nullable ReportHandler reportHandler){
 		if(expect(list, 2, reportHandler)){
 			Among a = eval(list.get(0), reportHandler);
 			if(a==null) return null;
@@ -61,7 +59,7 @@ final class EvalLib{
 	}
 
 	private enum BinaryBoolOp{AND, OR, AND_STRICT, OR_STRICT}
-	@Nullable private static Among binaryBool(AmongList list, BinaryBoolOp op, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private static Among binaryBool(AmongList list, BinaryBoolOp op, @Nullable ReportHandler reportHandler){
 		if(expect(list, 2, reportHandler)){
 			Boolean a = evalBool(list.get(0), reportHandler);
 			if(a==null) return null;
@@ -80,7 +78,7 @@ final class EvalLib{
 	}
 
 	private enum BinaryNumOp{ADD, SUB, MUL, DIV, POW, GT, LT, GTEQ, LTEQ}
-	@Nullable private static Among binaryNum(AmongList list, BinaryNumOp op, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private static Among binaryNum(AmongList list, BinaryNumOp op, @Nullable ReportHandler reportHandler){
 		if(expect(list, 2, reportHandler)){
 			Double a = evalNum(list.get(0), reportHandler);
 			if(a==null) return null;
@@ -102,7 +100,7 @@ final class EvalLib{
 	}
 
 	private enum UnaryOp{NEGATE, PLUS, NOT}
-	@Nullable private static Among unary(AmongList list, UnaryOp op, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private static Among unary(AmongList list, UnaryOp op, @Nullable ReportHandler reportHandler){
 		if(expect(list, 1, reportHandler)){
 			if(op==UnaryOp.NOT){
 				Boolean a = evalBool(list.get(0), reportHandler);
@@ -119,26 +117,26 @@ final class EvalLib{
 		return null;
 	}
 
-	private static boolean expect(AmongList list, int size, @Nullable BiConsumer<ReportType, String> reportHandler){
+	private static boolean expect(AmongList list, int size, @Nullable ReportHandler reportHandler){
 		if(list.size()>=size) return true;
 		if(reportHandler!=null)
-			reportHandler.accept(ReportType.ERROR, "Invalid input '"+list+"': Not enough parameters, minimum "+size+" required");
+			reportHandler.reportError("Not enough parameters, minimum "+size+" required", list.sourcePosition());
 		return false;
 	}
-	@Nullable private static Boolean evalBool(Among among, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private static Boolean evalBool(Among among, @Nullable ReportHandler reportHandler){
 		Among a2 = eval(among, reportHandler);
 		if(a2==null) return null;
 		Boolean b = toBool(a2);
 		if(b==null&&reportHandler!=null)
-			reportHandler.accept(ReportType.ERROR, "Invalid input '"+a2+"': Expected boolean");
+			reportHandler.reportError("Expected boolean", among.sourcePosition());
 		return null;
 	}
-	@Nullable private static Double evalNum(Among among, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Nullable private static Double evalNum(Among among, @Nullable ReportHandler reportHandler){
 		Among a2 = eval(among, reportHandler);
 		if(a2==null) return null;
 		Double n = toNum(a2);
 		if(n==null&&reportHandler!=null)
-			reportHandler.accept(ReportType.ERROR, "Invalid input '"+a2+"': Expected number");
+			reportHandler.reportError("Expected number", among.sourcePosition());
 		return n;
 	}
 

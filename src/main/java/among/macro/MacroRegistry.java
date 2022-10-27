@@ -1,5 +1,6 @@
 package among.macro;
 
+import among.ReportHandler;
 import among.ReportType;
 import among.ToStringContext;
 import among.ToStringOption;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,12 +46,12 @@ public final class MacroRegistry{
 	 *
 	 * @param macro Macro to be registered
 	 * @throws NullPointerException If {@code macro == null}
-	 * @see MacroRegistry#add(Macro, BiConsumer)
+	 * @see MacroRegistry#add(Macro, ReportHandler)
 	 */
 	public void add(Macro macro){
 		add(macro, null);
 	}
-	public void add(Macro macro, @Nullable BiConsumer<ReportType, String> reportHandler){
+	public void add(Macro macro, @Nullable ReportHandler reportHandler){
 		Group g = groups.computeIfAbsent(macro.signature(), s -> {
 			switch(s.type()){
 				case CONST: case ACCESS: return new ConstGroup();
@@ -100,18 +100,18 @@ public final class MacroRegistry{
 	}
 
 	public static abstract class Group{
-		@Nullable public abstract Macro search(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler);
-		protected abstract void add(Macro macro, @Nullable BiConsumer<ReportType, String> reportHandler);
+		@Nullable public abstract Macro search(Among argument, @Nullable ReportHandler reportHandler);
+		protected abstract void add(Macro macro, @Nullable ReportHandler reportHandler);
 		protected abstract Stream<Macro> macros();
 	}
 
 	public static final class ConstGroup extends Group{
 		@Nullable private Macro macro;
 
-		@Override @Nullable public Macro search(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override @Nullable public Macro search(Among argument, @Nullable ReportHandler reportHandler){
 			return macro;
 		}
-		@Override protected void add(Macro macro, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override protected void add(Macro macro, @Nullable ReportHandler reportHandler){
 			if(this.macro!=null) reportOverwrite(reportHandler, macro, Collections.singletonList(this.macro));
 			this.macro = macro;
 		}
@@ -133,7 +133,7 @@ public final class MacroRegistry{
 	public static abstract class MatchBasedGroup<T extends Among> extends Group{
 		private final List<Macro> macros = new ArrayList<>();
 
-		@Nullable protected Macro searchInternal(T argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Nullable protected Macro searchInternal(T argument, @Nullable ReportHandler reportHandler){
 			@Nullable Macro matched = null;
 			int overmatched = 0;
 			@Nullable List<Macro> ambiguousMacros = null;
@@ -162,7 +162,7 @@ public final class MacroRegistry{
 			if(matched==null) reportNoMatch(reportHandler, macros);
 			return matched;
 		}
-		@Override protected void add(Macro macro, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override protected void add(Macro macro, @Nullable ReportHandler reportHandler){
 			List<Macro> overwritten = null, overlapping = null;
 			for(int i = 0; i<macros.size(); ){
 				Macro m = macros.get(i);
@@ -217,7 +217,7 @@ public final class MacroRegistry{
 	}
 
 	public static class ListGroup extends MatchBasedGroup<AmongList>{
-		@Override @Nullable public Macro search(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override @Nullable public Macro search(Among argument, @Nullable ReportHandler reportHandler){
 			return searchInternal(argument.asList(), reportHandler);
 		}
 		@Override protected int match(Macro macro, AmongList args){
@@ -236,7 +236,7 @@ public final class MacroRegistry{
 	}
 
 	public static class ObjectGroup extends MatchBasedGroup<AmongObject>{
-		@Override @Nullable public Macro search(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override @Nullable public Macro search(Among argument, @Nullable ReportHandler reportHandler){
 			return searchInternal(argument.asObj(), reportHandler);
 		}
 		@Override protected int match(Macro macro, AmongObject args){
@@ -261,40 +261,40 @@ public final class MacroRegistry{
 	}
 
 	public static class ListFunctionGroup extends ListGroup{
-		@Override @Nullable public Macro search(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override @Nullable public Macro search(Among argument, @Nullable ReportHandler reportHandler){
 			return searchInternal(argument.asList().get(1).asList(), reportHandler);
 		}
 	}
 
 	public static class ObjectFunctionGroup extends ObjectGroup{
-		@Override @Nullable public Macro search(Among argument, @Nullable BiConsumer<ReportType, String> reportHandler){
+		@Override @Nullable public Macro search(Among argument, @Nullable ReportHandler reportHandler){
 			return searchInternal(argument.asList().get(1).asObj(), reportHandler);
 		}
 	}
 
-	private static void reportAmbiguousUsage(@Nullable BiConsumer<ReportType, String> reportHandler,
+	private static void reportAmbiguousUsage(@Nullable ReportHandler reportHandler,
 	                                         MacroSignature signature, Iterable<Macro> ambiguousMacros){
 		if(reportHandler==null) return;
 		StringBuilder stb = new StringBuilder("Ambiguous usage of macro ").append(signature).append(':');
 		for(Macro m : ambiguousMacros)
 			m.signatureAndParameter(true).toPrettyString(stb.append("\n  "), 1, ToStringOption.DEFAULT, ToStringContext.NONE);
-		reportHandler.accept(ReportType.ERROR, stb.toString());
+		reportHandler.reportError(stb.toString());
 	}
 
-	private static void reportNoMatch(@Nullable BiConsumer<ReportType, String> reportHandler,
+	private static void reportNoMatch(@Nullable ReportHandler reportHandler,
 	                                  Collection<Macro> macros){
 		if(reportHandler==null) return;
 		if(macros.isEmpty()){
-			reportHandler.accept(ReportType.ERROR, "No macro defined, this shouldn't happen");
+			reportHandler.reportError("No macro defined, this shouldn't happen");
 		}else{
 			StringBuilder stb = new StringBuilder("Wrong usage, expected:");
 			for(Macro m : macros)
 				m.signatureAndParameter(true).toPrettyString(stb.append("\n  "), 1, ToStringOption.DEFAULT, ToStringContext.NONE);
-			reportHandler.accept(ReportType.ERROR, stb.toString());
+			reportHandler.reportError(stb.toString());
 		}
 	}
 
-	private static void reportOverwrite(@Nullable BiConsumer<ReportType, String> reportHandler,
+	private static void reportOverwrite(@Nullable ReportHandler reportHandler,
 	                                    Macro newMacro, Collection<Macro> overwrittenMacros){
 		if(reportHandler==null) return;
 		StringBuilder stb = new StringBuilder("New macro ").append(newMacro.signature()).append(" overwrites ")
@@ -303,10 +303,10 @@ public final class MacroRegistry{
 		for(Macro m : overwrittenMacros)
 			m.signatureAndParameter(true).toPrettyString(stb.append("\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
 		newMacro.signatureAndParameter(true).toPrettyString(stb.append("\n  New macro:\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
-		reportHandler.accept(ReportType.WARN, stb.toString());
+		reportHandler.reportWarning(stb.toString());
 	}
 
-	private static void reportOverlap(@Nullable BiConsumer<ReportType, String> reportHandler,
+	private static void reportOverlap(@Nullable ReportHandler reportHandler,
 	                                  Macro newMacro, Collection<Macro> overlappingMacros){
 		if(reportHandler==null) return;
 		StringBuilder stb = new StringBuilder("New macro ").append(newMacro.signature()).append(" possibly overlaps with ")
@@ -315,6 +315,6 @@ public final class MacroRegistry{
 		for(Macro m : overlappingMacros)
 			m.signatureAndParameter(true).toPrettyString(stb.append("\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
 		newMacro.signatureAndParameter(true).toPrettyString(stb.append("\n  New macro:\n    "), 2, ToStringOption.DEFAULT, ToStringContext.NONE);
-		reportHandler.accept(ReportType.INFO, stb.toString());
+		reportHandler.report(ReportType.INFO, stb.toString());
 	}
 }

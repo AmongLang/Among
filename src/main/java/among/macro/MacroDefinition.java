@@ -1,6 +1,6 @@
 package among.macro;
 
-import among.ReportType;
+import among.ReportHandler;
 import among.ToPrettyString;
 import among.ToStringContext;
 import among.ToStringOption;
@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 /**
  * Macro definitions. Snippet below shows macros with each type written in Among.
@@ -73,7 +72,7 @@ public final class MacroDefinition extends Macro{
 		return replacements.isEmpty();
 	}
 
-	@Override protected Among applyMacro(Among[] args, boolean copyConstant, @Nullable BiConsumer<ReportType, String> reportHandler){
+	@Override protected Among applyMacro(Among[] args, boolean copyConstant, @Nullable ReportHandler reportHandler){
 		if(isConstant()) return copyConstant ? template.copy() : template;
 		Among o = template.copy();
 		for(MacroReplacement r : replacements)

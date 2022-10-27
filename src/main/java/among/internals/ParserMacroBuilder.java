@@ -177,7 +177,7 @@ final class ParserMacroBuilder{
 						MacroParameterList.of(params.subList(1, params.size())) :
 						MacroParameterList.of(params),
 				expr, replacements, typeInferences);
-		parser.importDefinition().macros().add(macro, (t, s) -> parser.report(t, s, start));
+		parser.importDefinition().macros().add(macro, parser.reportAt(start));
 		parser.definition().macros().add(macro);
 	}
 }

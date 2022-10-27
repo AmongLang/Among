@@ -17,6 +17,29 @@ import java.util.Map;
  * @see AmongNameable
  */
 public abstract class Among extends ToPrettyString.Base{
+	private int sourcePosition = -1;
+
+	/**
+	 * Returns position of this node in source. This value does not affect other operations, for example {@link
+	 * Object#equals(Object)}.<br>
+	 * This value is initialized during parsing. For Among values that created from other source has this value set to
+	 * {@code -1} by default.
+	 *
+	 * @return position of this node in source
+	 */
+	public int sourcePosition(){
+		return sourcePosition;
+	}
+	/**
+	 * Sets position of this node in source. This value does not affect other operations, for example {@link
+	 * Object#equals(Object)}.
+	 *
+	 * @param sourcePosition position of this node in source
+	 */
+	public void setSourcePosition(int sourcePosition){
+		this.sourcePosition = sourcePosition;
+	}
+
 	/**
 	 * Return this instance as {@link AmongObject} instance.
 	 *
