@@ -195,7 +195,10 @@ public class AmongEngine{
 			try{
 				Source source = sp.resolve(path);
 				if(source!=null){
-					CompileResult res = read(source);
+					RootAndDefinition rad = createDefaultDefinition(path);
+					CompileResult res = read(source,
+							rad==null ? null : rad.root(),
+							rad==null ? null : rad.definition());
 					if(res.isSuccess()){
 						handleCompileSuccess(path, res);
 						return res.rootAndDefinition();
@@ -251,5 +254,17 @@ public class AmongEngine{
 					System.err.println("  '"+trace.get(i)+"' references '"+trace.get(i+1)+"'");
 				System.err.println("  and '"+trace.get(trace.size()-1)+"' references '"+path+"'");
 		}
+	}
+
+	/**
+	 * Create default definition for source at given path. If {@code null} is returned, an empty root and definition
+	 * will be used.<br>
+	 * The root and definition may be modified during compilation. As such, each root and definition returned from this
+	 * method should be newly created.
+	 *
+	 * @return Default definition for source at given path
+	 */
+	@Nullable protected RootAndDefinition createDefaultDefinition(String path){
+		return null;
 	}
 }
