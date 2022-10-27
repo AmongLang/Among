@@ -355,6 +355,13 @@ public class EqualityTests{
 				value("1"));
 	}
 
+	@Test public void operationNewline(){
+		simpleEqualityTest("operation_newline",
+				namedList("+", namedList("+", "a", "b"), "c"),
+				namedList("+", namedList("+", "a", "b"), "c"),
+				list("a", namedList("+", "b"), namedList("+", "c")));
+	}
+
 	private static void simpleEqualityTest(String name, Among... expected){
 		try{
 			assertArrayEquals(expected,

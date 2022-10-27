@@ -594,12 +594,16 @@ public final class Parser{
 			tokenizer.reset();
 			list.add(operationExpression(importDefinition.operators().priorityGroup(), 0));
 			tokenizer.discard();
-			switch(tokenizer.next(true, TokenizationMode.OPERATION).type){
-				case COMMA: continue;
+			switch(tokenizer.next(false, TokenizationMode.OPERATION).type){
+				case BR:
+					tokenizer.discard();
+					if(!tokenizer.next(true, TokenizationMode.OPERATION).is(Token.TokenType.COMMA))
+						tokenizer.reset();
+				case COMMA: break;
 				case EOF: reportError("Unterminated operation");
 				case R_PAREN: break L;
 				default:
-					reportError("Each term should be separated with ','");
+					reportError("Each term should be separated with either line breaks or ','");
 					tokenizer.reset();
 			}
 		}
@@ -637,7 +641,7 @@ public final class Parser{
 		Among a = operationExpression(operators, i+1);
 		while(true){
 			tokenizer.discard();
-			Token next = tokenizer.next(true, TokenizationMode.OPERATION);
+			Token next = tokenizer.next(false, TokenizationMode.OPERATION);
 			if(next.isOperatorOrKeyword()){
 				OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 				if(op!=null){
@@ -669,7 +673,7 @@ public final class Parser{
 	private Among rightAssociativeBinary(List<OperatorRegistry.PriorityGroup> operators, int i){
 		Among a = operationExpression(operators, i+1);
 		tokenizer.discard();
-		Token next = tokenizer.next(true, TokenizationMode.OPERATION);
+		Token next = tokenizer.next(false, TokenizationMode.OPERATION);
 		if(next.isOperatorOrKeyword()){
 			OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 			if(op!=null){
@@ -686,7 +690,7 @@ public final class Parser{
 		Among a = operationExpression(operators, i+1);
 		while(true){
 			tokenizer.discard();
-			Token next = tokenizer.next(true, TokenizationMode.OPERATION);
+			Token next = tokenizer.next(false, TokenizationMode.OPERATION);
 			if(next.isOperatorOrKeyword()){
 				OperatorDefinition op = operators.get(i).get(next.expectLiteral());
 				if(op!=null){
