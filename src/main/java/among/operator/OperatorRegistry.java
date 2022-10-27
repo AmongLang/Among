@@ -19,8 +19,9 @@ import static among.operator.OperatorType.BINARY;
 import static among.operator.OperatorType.POSTFIX;
 
 /**
- * Collection of {@link OperatorDefinition}s organized in various format to ensure faster access during compilation.<br>
- * Just to be clear, absolutely everything in this class is not thread safe.
+ * Registry for {@link OperatorDefinition}s. Provides interface for registering/de-registering operator/keywords, as
+ * well as ability to enumerate defined operator/keywords.<br>
+ * Operators and keywords are grouped by name(used during tokenization) or by priority(used during parsing).
  */
 public final class OperatorRegistry{
 	private final Map<String, NameGroup> operators = new HashMap<>();
@@ -257,7 +258,8 @@ public final class OperatorRegistry{
 		public String message(OperatorDefinition def){
 			switch(this){
 				case BOTH_OPERATOR_AND_KEYWORD: return "Word '"+def.name()+"' is defined as both operator and keyword";
-				case DUPLICATE: case IDENTICAL_DUPLICATE: return (def.isKeyword() ? "Keyword '" : "Operator '")+def.name()+"' is defined twice";
+				case DUPLICATE:
+				case IDENTICAL_DUPLICATE: return (def.isKeyword() ? "Keyword '" : "Operator '")+def.name()+"' is defined twice";
 				case BOTH_BINARY_AND_POSTFIX: return (def.isKeyword() ? "Keyword '" : "Operator '")+def.name()+"' is both defined as binary and postfix";
 				case PRIORITY_OCCUPIED_BY_DIFFERENT_TYPE: return "Priority "+def.priority()+" is already in use with different type";
 				case MIXED_ASSOCIATIVITY: return "Both left-associative and right-associative operators are present in the same priority group "+def.priority()+".";

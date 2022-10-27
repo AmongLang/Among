@@ -20,6 +20,10 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Registry for {@link Macro}s. Provides interface for registering/de-registering macros, as well as function to match
+ * appropriate macro for given argument.
+ */
 public final class MacroRegistry{
 	private final Map<MacroSignature, Group> groups = new HashMap<>();
 
