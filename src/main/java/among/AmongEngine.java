@@ -14,6 +14,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * An object responsible for reading among sources. Additionally, this class provides number of compilation options and
@@ -130,11 +131,31 @@ public class AmongEngine{
 	 * @param path Path of the instance
 	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
 	 * @throws NullPointerException If {@code path == null}
+	 * @see AmongEngine#getOrReadFrom(String, Consumer)
 	 */
 	@Nullable public final RootAndDefinition getOrReadFrom(String path){
+		return getOrReadFrom(path, System.err::println);
+	}
+
+	/**
+	 * Get an instance of {@link AmongRoot} correlated to specific path. If the instance was not read yet, the engine
+	 * will try to resolve the instance using instance providers, then the source - which will be read with {@link
+	 * AmongEngine#read(Source)}. The resulting object will be automatically correlated to given path.<br>
+	 * If neither instance nor source cannot be resolved, {@code null} will be returned. If the compilation result
+	 * returned by {@link AmongEngine#read(Source)} contains error, {@code null} will be returned. Following calls in
+	 * the future with identical path will yield {@code null} without an attempt to resolve the instance or source
+	 * again.<br>
+	 * Note that modifying the returned root might produce unwanted behavior.
+	 *
+	 * @param path          Path of the instance
+	 * @param reportHandler Optional report handler
+	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
+	 * @throws NullPointerException If {@code path == null}
+	 */
+	@Nullable public final RootAndDefinition getOrReadFrom(String path, @Nullable Consumer<String> reportHandler){
 		RootAndDefinition r = pathByInstance.get(path);
 		if(r==null){
-			r = resolve(path);
+			r = resolve(path, reportHandler);
 			pathByInstance.put(path, r);
 		}
 		return r;
@@ -154,41 +175,80 @@ public class AmongEngine{
 	 * @param path Path of the instance
 	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
 	 * @throws NullPointerException If {@code path == null}
+	 * @see AmongEngine#readFrom(String, Consumer)
 	 */
 	@Nullable public final RootAndDefinition readFrom(String path){
-		RootAndDefinition r = resolve(path);
+		return readFrom(path, System.err::println);
+	}
+	/**
+	 * Try to resolve an instance of {@link AmongRoot} with given path, first using instance providers, then the source
+	 * - which will be read with {@link AmongEngine#read(Source)}. If succeeded, the instance will be correlated to
+	 * the path. If there was already an instance correlated, it will be overwritten.<br>
+	 * If neither instance nor source cannot be resolved, {@code null} will be returned. If the compilation result
+	 * returned by {@link AmongEngine#read(Source)} contains error, {@code null} will be returned. Following calls of
+	 * {@link AmongEngine#getOrReadFrom(String)} in
+	 * the future with identical path will yield {@code null} without an attempt to resolve the instance or source
+	 * again.<br>
+	 * Note that modifying the returned root might produce unwanted behavior.
+	 *
+	 * @param path          Path of the instance
+	 * @param reportHandler Optional report handler
+	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
+	 * @throws NullPointerException If {@code path == null}
+	 */
+	@Nullable public final RootAndDefinition readFrom(String path, @Nullable Consumer<String> reportHandler){
+		RootAndDefinition r = resolve(path, reportHandler);
 		pathByInstance.put(path, r);
 		return r;
 	}
 
 	private final LinkedHashSet<String> resolvingPathCache = new LinkedHashSet<>();
 
-	@Nullable private RootAndDefinition resolve(String path){
-		if(!resolvingPathCache.add(path)){
-			List<String> trace = new ArrayList<>();
-			boolean found = false;
-			for(String s : resolvingPathCache){
-				if(found) trace.add(s);
-				else if(s.equals(path)){
-					found = true;
-					trace.add(s);
+	@Nullable private RootAndDefinition resolve(String path, @Nullable Consumer<String> reportHandler){
+		if(!resolvingPathCache.add(path)){ // path is already resolving, which implies circular referencing
+			if(reportHandler!=null){
+				List<String> trace = new ArrayList<>();
+				boolean found = false;
+				for(String s : resolvingPathCache){
+					if(found) trace.add(s);
+					else if(s.equals(path)){
+						found = true;
+						trace.add(s);
+					}
+				}
+				switch(trace.size()){
+					case 0: // what?
+						reportHandler.accept("Cannot resolve definitions from path '"+path+"': Cosmic ray interference or sth idk");
+						break;
+					case 1: // self-reference
+						reportHandler.accept("Cannot resolve definitions from path '"+path+"': Self-reference");
+						break;
+					default:{ // circular reference
+						StringBuilder stb = new StringBuilder();
+						stb.append("Cannot resolve definitions from path '").append(path).append("': Circular reference detected");
+						for(int i = 0; i<trace.size()-1; i++)
+							stb.append("\n  '").append(trace.get(i)).append("' references '").append(trace.get(i+1)).append("'");
+						stb.append("\n  and '").append(trace.get(trace.size()-1)).append("' references '").append(path).append("'");
+						reportHandler.accept(stb.toString());
+					}
 				}
 			}
-			handleCircularReference(path, trace);
 			return null;
 		}
-		RootAndDefinition r = resolveInternal(path);
+		RootAndDefinition r = resolveInternal(path, reportHandler);
 		resolvingPathCache.remove(path);
 		return r;
 	}
 
-	@Nullable private RootAndDefinition resolveInternal(String path){
+	@Nullable private RootAndDefinition resolveInternal(String path, @Nullable Consumer<String> reportHandler){
+		boolean error = false;
 		for(Provider<RootAndDefinition> ip : instanceProviders){
 			try{
 				RootAndDefinition resolve = ip.resolve(path);
 				if(resolve!=null) return resolve;
 			}catch(Exception ex){
 				handleInstanceResolveException(path, ex);
+				error = true;
 			}
 		}
 		for(Provider<Source> sp : sourceProviders){
@@ -204,13 +264,19 @@ public class AmongEngine{
 						return res.rootAndDefinition();
 					}else{
 						handleCompileError(path, res);
-						return null;
+						error = true;
+						break;
 					}
 				}
 			}catch(Exception ex){
 				handleSourceResolveException(path, ex);
+				error = true;
 			}
 		}
+		if(reportHandler!=null)
+			reportHandler.accept(
+					"Cannot resolve definitions from path '"+path+"': "+
+							(error ? "Error in script" : "No script corresponding to path"));
 		return null;
 	}
 
@@ -240,28 +306,13 @@ public class AmongEngine{
 		result.printReports(path);
 	}
 
-	protected void handleCircularReference(String path, List<String> trace){
-		switch(trace.size()){
-			case 0: // what?
-				System.err.println("Cannot import script resolved with '"+path+"' due to cosmic ray interference");
-				break;
-			case 1: // self-reference
-				System.err.println("Self-reference in script '"+path+"'");
-				break;
-			default: // circular reference
-				System.err.println("Cannot import script resolved with '"+path+"' due to circular reference:");
-				for(int i = 0; i<trace.size()-1; i++)
-					System.err.println("  '"+trace.get(i)+"' references '"+trace.get(i+1)+"'");
-				System.err.println("  and '"+trace.get(trace.size()-1)+"' references '"+path+"'");
-		}
-	}
-
 	/**
 	 * Create default definition for source at given path. If {@code null} is returned, an empty root and definition
 	 * will be used.<br>
 	 * The root and definition may be modified during compilation. As such, each root and definition returned from this
 	 * method should be newly created.
 	 *
+	 * @param path The source path
 	 * @return Default definition for source at given path
 	 */
 	@Nullable protected RootAndDefinition createDefaultDefinition(String path){

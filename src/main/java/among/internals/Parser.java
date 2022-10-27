@@ -106,7 +106,7 @@ public final class Parser{
 						case "fn": undefMacro(true); break;
 						case "operator": undefOperation(false); break;
 						case "keyword": undefOperation(true); break;
-						case "use": undefUse(); break;
+						case "use": undefUse(next.start); break;
 						default:
 							reportError("Expected 'macro', 'operator' or 'keyword'");
 							tryToRecover(TokenizationMode.UNEXPECTED, null, true, true);
@@ -400,7 +400,7 @@ public final class Parser{
 		importDefinition.operators().remove(name, keyword);
 	}
 
-	private void undefUse(){
+	private void undefUse(int startIndex){
 		Token next = tokenizer.next(false, TokenizationMode.VALUE);
 		if(!next.isLiteral()){
 			reportError("Expected path");
@@ -408,19 +408,16 @@ public final class Parser{
 			return;
 		}
 		String path = next.expectLiteral();
-		RootAndDefinition imported = engine.getOrReadFrom(path);
-		if(imported==null){
-			reportError("Invalid use statement: Cannot resolve definitions from path '"+path+"'");
-		}else{
-			imported.definition().macros().allMacroSignatures().forEach(s -> {
-				importDefinition.macros().remove(s);
-				definition.macros().remove(s);
-			});
-			imported.definition().operators().allOperatorNames().forEach(g -> {
-				importDefinition.operators().remove(g.name(), g.isKeyword());
-				definition.operators().remove(g.name(), g.isKeyword());
-			});
-		}
+		RootAndDefinition imported = engine.getOrReadFrom(path, s -> reportError(s, startIndex));
+		if(imported==null) return;
+		imported.definition().macros().allMacroSignatures().forEach(s -> {
+			importDefinition.macros().remove(s);
+			definition.macros().remove(s);
+		});
+		imported.definition().operators().allOperatorNames().forEach(g -> {
+			importDefinition.operators().remove(g.name(), g.isKeyword());
+			definition.operators().remove(g.name(), g.isKeyword());
+		});
 	}
 
 	private void use(int startIndex){
@@ -435,13 +432,10 @@ public final class Parser{
 			return;
 		}
 		String path = next.expectLiteral();
-		RootAndDefinition imported = engine.getOrReadFrom(path);
-		if(imported==null){
-			reportError("Invalid use statement: Cannot resolve definitions from path '"+path+"'", startIndex);
-		}else{
-			copyDefinitions(imported.definition(), importDefinition, true, startIndex);
-			if(pub) copyDefinitions(imported.definition(), definition, false, startIndex);
-		}
+		RootAndDefinition imported = engine.getOrReadFrom(path, message -> reportError(message, startIndex));
+		if(imported==null) return;
+		copyDefinitions(imported.definition(), importDefinition, true, startIndex);
+		if(pub) copyDefinitions(imported.definition(), definition, false, startIndex);
 		expectStmtEnd("Expected ',' or newline after use statement");
 	}
 
