@@ -4,6 +4,7 @@ import among.AmongWalker;
 import among.NodePath;
 import among.ToStringContext;
 import among.ToStringOption;
+import among.exception.Sussy;
 import among.internals.LiteralFormats;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,14 +93,28 @@ public class AmongObject extends AmongNameable{
 	}
 
 	/**
-	 * Return the property for name of {@code key}. Returns {@code null} if there's no property with given name.
+	 * Return the property associated with {@code key}. Returns {@code null} if there's no property with given key.
 	 *
 	 * @param key Key of the property
-	 * @return Whether this object has property named {@code key}.
+	 * @return The property
 	 * @throws NullPointerException If {@code key == null}
 	 */
 	@Nullable public Among getProperty(String key){
 		return this.properties.get(key);
+	}
+
+	/**
+	 * Return the property for name of {@code key}. If there is no property with given key, an exception will be thrown.
+	 *
+	 * @param key Key of the property
+	 * @return The property
+	 * @throws NullPointerException If {@code key == null}
+	 * @throws Sussy                If there is no property with given key
+	 */
+	public Among expectProperty(String key){
+		Among among = this.properties.get(key);
+		if(among==null) throw new Sussy("No property named '"+key+'\'');
+		return among;
 	}
 
 	/**
