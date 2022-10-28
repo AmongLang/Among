@@ -51,8 +51,8 @@ public final class Report{
 		return hasSourcePosition() ? source.getLnCol(sourcePosition) : null;
 	}
 
-	public void print(Source source, Consumer<String> logger){
-		LnCol lc = getLineColumn(source);
+	public void print(@Nullable Source source, Consumer<String> logger){
+		LnCol lc = source!=null ? getLineColumn(source) : null;
 
 		logger.accept((lc!=null ? "["+lc+"] " : "")+type.toString()+": "+message);
 		if(exception!=null){
