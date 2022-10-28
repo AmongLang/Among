@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Nameable {@link Among} node with ordered elements. Snippet below shows a list written in Among.
@@ -111,6 +112,10 @@ public class AmongList extends AmongNameable implements Iterable<Among>{
 	 */
 	@Override public Iterator<Among> iterator(){
 		return Collections.unmodifiableList(values).iterator();
+	}
+
+	public Stream<Among> stream(){
+		return this.values.stream();
 	}
 
 	@Override public AmongList asList(){
