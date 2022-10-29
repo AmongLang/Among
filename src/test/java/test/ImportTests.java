@@ -2,6 +2,7 @@ package test;
 
 import among.AmongDefinition;
 import among.AmongEngine;
+import among.ReadResult;
 import among.RootAndDefinition;
 import among.macro.Macro;
 import among.macro.MacroType;
@@ -86,13 +87,13 @@ public class ImportTests{
 
 	private static void eq(AmongEngine engine, String name, Among... expected){
 		long t = System.currentTimeMillis();
-		RootAndDefinition root = engine.getOrReadFrom(name);
+		ReadResult root = engine.getOrReadFrom(name);
 		t = System.currentTimeMillis()-t;
-		assertNotNull(root, "Compilation failed");
-		TestUtil.log(root, t, true);
+		assertTrue(root.isSuccess(), "Compilation failed");
+		TestUtil.log(root.rootAndDefinition(), t, true);
 		assertArrayEquals(expected, root.root().values().toArray(new Among[0]));
 	}
 	private static void err(AmongEngine engine, String name){
-		assertNull(engine.getOrReadFrom(name), "Cannot even fail smh smh");
+		assertFalse(engine.getOrReadFrom(name).isSuccess(), "Cannot even fail smh smh");
 	}
 }

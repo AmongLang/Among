@@ -4,10 +4,10 @@ import among.AmongDefinition;
 import among.AmongEngine;
 import among.AmongRoot;
 import among.CompileResult;
+import among.ReadResult;
 import among.Report;
 import among.ReportHandler;
 import among.ReportType;
-import among.RootAndDefinition;
 import among.Source;
 import among.macro.Macro;
 import among.macro.MacroRegistry;
@@ -393,9 +393,8 @@ public final class Parser implements ReportHandler{
 			tryToRecover(TokenizationMode.UNEXPECTED, null, true, true);
 			return;
 		}
-		String path = next.expectLiteral();
-		RootAndDefinition imported = engine.getOrReadFrom(path, s -> reportError(s, startIndex));
-		if(imported==null) return;
+		ReadResult imported = engine.getOrReadFrom(next.expectLiteral(), s -> reportError(s, startIndex));
+		if(!imported.isSuccess()) return;
 		imported.definition().macros().allMacroSignatures().forEach(s -> {
 			importDefinition.macros().remove(s);
 			definition.macros().remove(s);
@@ -417,9 +416,8 @@ public final class Parser implements ReportHandler{
 			skipUntilLineBreak();
 			return;
 		}
-		String path = next.expectLiteral();
-		RootAndDefinition imported = engine.getOrReadFrom(path, message -> reportError(message, startIndex));
-		if(imported==null) return;
+		ReadResult imported = engine.getOrReadFrom(next.expectLiteral(), message -> reportError(message, startIndex));
+		if(!imported.isSuccess()) return;
 		copyDefinitions(imported.definition(), importDefinition, true, startIndex);
 		if(pub) copyDefinitions(imported.definition(), definition, false, startIndex);
 		expectStmtEnd("Expected ',' or newline after use statement");

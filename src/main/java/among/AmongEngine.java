@@ -61,7 +61,7 @@ public class AmongEngine{
 
 	private final List<Provider<Source>> sourceProviders = new ArrayList<>();
 	private final List<Provider<RootAndDefinition>> instanceProviders = new ArrayList<>();
-	private final Map<String, RootAndDefinition> pathByInstance = new HashMap<>();
+	private final Map<String, ReadResult> pathByInstance = new HashMap<>();
 
 	{
 		instanceProviders.add(DefaultInstanceProvider.instance());
@@ -119,41 +119,41 @@ public class AmongEngine{
 	}
 
 	/**
-	 * Get an instance of {@link AmongRoot} correlated to specific path. If the instance was not read yet, the engine
-	 * will try to resolve the instance using instance providers, then the source - which will be read with {@link
-	 * AmongEngine#read(Source)}. The resulting object will be automatically correlated to given path.<br>
-	 * If neither instance nor source cannot be resolved, {@code null} will be returned. If the compilation result
-	 * returned by {@link AmongEngine#read(Source)} contains error, {@code null} will be returned. Following calls in
-	 * the future with identical path will yield {@code null} without an attempt to resolve the instance or source
-	 * again.<br>
+	 * Get an instance of {@link RootAndDefinition} correlated to specific path. If the instance was not read yet, the
+	 * engine will try to resolve the instance using instance providers, then the source - which will be read with
+	 * {@link AmongEngine#read(Source)}. The resulting object will be automatically correlated to given path.<br>
+	 * If neither instance nor source cannot be resolved, {@link ReadResult.Failure} will be returned. If the
+	 * compilation result returned by {@link AmongEngine#read(Source)} contains error, {@link ReadResult.Failure} will
+	 * be returned. Following calls in the future with identical path will yield the same result without an attempt to
+	 * resolve the instance or source again.<br>
 	 * Note that modifying the returned root might produce unwanted behavior.
 	 *
 	 * @param path Path of the instance
-	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
+	 * @return Result of the action
 	 * @throws NullPointerException If {@code path == null}
 	 * @see AmongEngine#getOrReadFrom(String, Consumer)
 	 */
-	@Nullable public final RootAndDefinition getOrReadFrom(String path){
+	public final ReadResult getOrReadFrom(String path){
 		return getOrReadFrom(path, System.err::println);
 	}
 
 	/**
-	 * Get an instance of {@link AmongRoot} correlated to specific path. If the instance was not read yet, the engine
-	 * will try to resolve the instance using instance providers, then the source - which will be read with {@link
-	 * AmongEngine#read(Source)}. The resulting object will be automatically correlated to given path.<br>
-	 * If neither instance nor source cannot be resolved, {@code null} will be returned. If the compilation result
-	 * returned by {@link AmongEngine#read(Source)} contains error, {@code null} will be returned. Following calls in
-	 * the future with identical path will yield {@code null} without an attempt to resolve the instance or source
-	 * again.<br>
+	 * Get an instance of {@link RootAndDefinition} correlated to specific path. If the instance was not read yet, the
+	 * engine will try to resolve the instance using instance providers, then the source - which will be read with
+	 * {@link AmongEngine#read(Source)}. The resulting object will be automatically correlated to given path.<br>
+	 * If neither instance nor source cannot be resolved, {@link ReadResult.Failure} will be returned. If the
+	 * compilation result returned by {@link AmongEngine#read(Source)} contains error, {@link ReadResult.Failure} will
+	 * be returned. Following calls in the future with identical path will yield the same result without an attempt to
+	 * resolve the instance or source again.<br>
 	 * Note that modifying the returned root might produce unwanted behavior.
 	 *
 	 * @param path          Path of the instance
 	 * @param reportHandler Optional report handler
-	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
+	 * @return Result of the action
 	 * @throws NullPointerException If {@code path == null}
 	 */
-	@Nullable public final RootAndDefinition getOrReadFrom(String path, @Nullable Consumer<String> reportHandler){
-		RootAndDefinition r = pathByInstance.get(path);
+	public final ReadResult getOrReadFrom(String path, @Nullable Consumer<String> reportHandler){
+		ReadResult r = pathByInstance.get(path);
 		if(r==null){
 			r = resolve(path, reportHandler);
 			pathByInstance.put(path, r);
@@ -165,46 +165,44 @@ public class AmongEngine{
 	 * Try to resolve an instance of {@link AmongRoot} with given path, first using instance providers, then the source
 	 * - which will be read with {@link AmongEngine#read(Source)}. If succeeded, the instance will be correlated to
 	 * the path. If there was already an instance correlated, it will be overwritten.<br>
-	 * If neither instance nor source cannot be resolved, {@code null} will be returned. If the compilation result
-	 * returned by {@link AmongEngine#read(Source)} contains error, {@code null} will be returned. Following calls of
-	 * {@link AmongEngine#getOrReadFrom(String)} in
-	 * the future with identical path will yield {@code null} without an attempt to resolve the instance or source
-	 * again.<br>
+	 * If neither instance nor source cannot be resolved, {@link ReadResult.Failure} will be returned. If the
+	 * compilation result returned by {@link AmongEngine#read(Source)} contains error, {@link ReadResult.Failure} will
+	 * be returned. Following calls of {@link AmongEngine#getOrReadFrom(String)} in the future with identical path will
+	 * yield the same result without an attempt to resolve the instance or source again.<br>
 	 * Note that modifying the returned root might produce unwanted behavior.
 	 *
 	 * @param path Path of the instance
-	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
+	 * @return Result of the action
 	 * @throws NullPointerException If {@code path == null}
 	 * @see AmongEngine#readFrom(String, Consumer)
 	 */
-	@Nullable public final RootAndDefinition readFrom(String path){
+	public final ReadResult readFrom(String path){
 		return readFrom(path, System.err::println);
 	}
 	/**
 	 * Try to resolve an instance of {@link AmongRoot} with given path, first using instance providers, then the source
 	 * - which will be read with {@link AmongEngine#read(Source)}. If succeeded, the instance will be correlated to
 	 * the path. If there was already an instance correlated, it will be overwritten.<br>
-	 * If neither instance nor source cannot be resolved, {@code null} will be returned. If the compilation result
-	 * returned by {@link AmongEngine#read(Source)} contains error, {@code null} will be returned. Following calls of
-	 * {@link AmongEngine#getOrReadFrom(String)} in
-	 * the future with identical path will yield {@code null} without an attempt to resolve the instance or source
-	 * again.<br>
+	 * If neither instance nor source cannot be resolved, {@link ReadResult.Failure} will be returned. If the
+	 * compilation result returned by {@link AmongEngine#read(Source)} contains error, {@link ReadResult.Failure} will
+	 * be returned. Following calls of {@link AmongEngine#getOrReadFrom(String)} in the future with identical path will
+	 * yield the same result without an attempt to resolve the instance or source again.<br>
 	 * Note that modifying the returned root might produce unwanted behavior.
 	 *
 	 * @param path          Path of the instance
 	 * @param reportHandler Optional report handler
-	 * @return Instance of {@link AmongRoot} correlated to the path, or {@code null} if the search failed
+	 * @return Result of the action
 	 * @throws NullPointerException If {@code path == null}
 	 */
-	@Nullable public final RootAndDefinition readFrom(String path, @Nullable Consumer<String> reportHandler){
-		RootAndDefinition r = resolve(path, reportHandler);
+	public final ReadResult readFrom(String path, @Nullable Consumer<String> reportHandler){
+		ReadResult r = resolve(path, reportHandler);
 		pathByInstance.put(path, r);
 		return r;
 	}
 
 	private final LinkedHashSet<String> resolvingPathCache = new LinkedHashSet<>();
 
-	@Nullable private RootAndDefinition resolve(String path, @Nullable Consumer<String> reportHandler){
+	private ReadResult resolve(String path, @Nullable Consumer<String> reportHandler){
 		if(!resolvingPathCache.add(path)){ // path is already resolving, which implies circular referencing
 			if(reportHandler!=null){
 				List<String> trace = new ArrayList<>();
@@ -233,19 +231,19 @@ public class AmongEngine{
 					}
 				}
 			}
-			return null;
+			return new ReadResult.Failure(path);
 		}
-		RootAndDefinition r = resolveInternal(path, reportHandler);
+		ReadResult r = resolveInternal(path, reportHandler);
 		resolvingPathCache.remove(path);
 		return r;
 	}
 
-	@Nullable private RootAndDefinition resolveInternal(String path, @Nullable Consumer<String> reportHandler){
+	private ReadResult resolveInternal(String path, @Nullable Consumer<String> reportHandler){
 		boolean error = false;
 		for(Provider<RootAndDefinition> ip : instanceProviders){
 			try{
 				RootAndDefinition resolve = ip.resolve(path);
-				if(resolve!=null) return resolve;
+				if(resolve!=null) return new ReadResult.Provided(path, resolve);
 			}catch(Exception ex){
 				handleInstanceResolveException(path, ex);
 				error = true;
@@ -261,7 +259,7 @@ public class AmongEngine{
 							rad==null ? null : rad.definition());
 					if(res.isSuccess()){
 						handleCompileSuccess(path, res);
-						return res.rootAndDefinition();
+						return new ReadResult.Compiled(path, res);
 					}else{
 						handleCompileError(path, res);
 						error = true;
@@ -277,7 +275,7 @@ public class AmongEngine{
 			reportHandler.accept(
 					"Cannot resolve definitions from path '"+path+"': "+
 							(error ? "Error in script" : "No script corresponding to path"));
-		return null;
+		return new ReadResult.Failure(path);
 	}
 
 	/**
