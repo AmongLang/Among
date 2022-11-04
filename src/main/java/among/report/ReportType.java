@@ -1,4 +1,4 @@
-package among;
+package among.report;
 
 public enum ReportType{
 	/**

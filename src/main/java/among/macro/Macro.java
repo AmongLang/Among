@@ -1,6 +1,6 @@
 package among.macro;
 
-import among.ReportHandler;
+import among.report.ReportHandler;
 import among.ToPrettyString;
 import among.ToStringContext;
 import among.ToStringOption;

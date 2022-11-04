@@ -1,7 +1,7 @@
 package among.internals;
 
 import among.ErrorHandling;
-import among.ReportType;
+import among.report.ReportType;
 import among.Source;
 import among.internals.Token.TokenType;
 import among.operator.OperatorRegistry.NameGroup;

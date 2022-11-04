@@ -1,7 +1,7 @@
 package among.macro;
 
-import among.ReportHandler;
-import among.ReportType;
+import among.report.ReportHandler;
+import among.report.ReportType;
 import among.ToStringContext;
 import among.ToStringOption;
 import among.obj.Among;

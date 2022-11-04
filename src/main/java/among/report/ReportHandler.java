@@ -1,6 +1,9 @@
-package among;
+package among.report;
 
+import among.Source;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
 
 @FunctionalInterface
 public interface ReportHandler{
@@ -38,5 +41,19 @@ public interface ReportHandler{
 	default ReportHandler reportAt(int sourcePosition){
 		return (type, message, srcIndex, ex, hints) ->
 				report(type, message, srcIndex<0 ? sourcePosition : srcIndex, ex, hints);
+	}
+
+	static ReportHandler simple(){
+		return simple(null);
+	}
+	static ReportHandler simple(@Nullable Source src){
+		return new SimpleReportHandler(src, -1);
+	}
+
+	static ReportHandler custom(BiConsumer<ReportType, String> printer){
+		return custom(null, printer);
+	}
+	static ReportHandler custom(@Nullable Source src, BiConsumer<ReportType, String> printer){
+		return new CustomReportHandler(src, printer, -1);
 	}
 }

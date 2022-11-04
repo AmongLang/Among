@@ -1,7 +1,7 @@
 package among.macro;
 
 import among.NodePath;
-import among.ReportHandler;
+import among.report.ReportHandler;
 import among.exception.Sussy;
 import among.obj.Among;
 import org.jetbrains.annotations.Nullable;

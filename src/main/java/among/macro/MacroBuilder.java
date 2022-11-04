@@ -1,6 +1,6 @@
 package among.macro;
 
-import among.ReportHandler;
+import among.report.ReportHandler;
 import among.ToStringOption;
 import among.TypeFlags;
 import among.exception.Sussy;

@@ -1,5 +1,7 @@
-package among;
+package among.report;
 
+import among.LnCol;
+import among.Source;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.PrintWriter;

@@ -1,6 +1,6 @@
 package among.internals.library;
 
-import among.ReportHandler;
+import among.report.ReportHandler;
 import among.exception.Sussy;
 import among.obj.Among;
 import among.obj.AmongList;

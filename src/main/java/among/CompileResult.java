@@ -1,6 +1,8 @@
 package among;
 
 import among.exception.SussyCompile;
+import among.report.Report;
+import among.report.ReportType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
