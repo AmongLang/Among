@@ -1,12 +1,12 @@
 package among.macro;
 
-import among.report.ReportHandler;
-import among.report.ReportType;
 import among.ToStringContext;
 import among.ToStringOption;
 import among.obj.Among;
 import among.obj.AmongList;
 import among.obj.AmongObject;
+import among.report.ReportHandler;
+import among.report.ReportType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -41,8 +41,8 @@ public final class MacroRegistry{
 
 	/**
 	 * Adds the macro to this registry. This method always succeeds; it always adds the macro by one way
-	 * or another. If there is another macro with same signature and it is considered 'identical' parameter,
-	 * the preexisting one is overwritten.
+	 * or another. If another macro exists with same signature and parameter considered as identical, the preexisting
+	 * one will be overwritten.
 	 *
 	 * @param macro Macro to be registered
 	 * @throws NullPointerException If {@code macro == null}

@@ -3,6 +3,13 @@ package among.report;
 import among.Source;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Implementation of {@link ReportHandler} that prints report to {@link System#out} (on {@link ReportType#INFO INFO} or
+ * {@link ReportType#WARN WARN}) or {@link System#err} (on {@link ReportType#ERROR ERROR}).
+ *
+ * @see ReportHandler#simple()
+ * @see ReportHandler#simple(Source)
+ */
 public class SimpleReportHandler implements ReportHandler{
 	@Nullable private final Source source;
 	private final int sourcePosition;

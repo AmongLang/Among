@@ -12,7 +12,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Message with type(info, warn or error) and position in source (optional), and exception (optional).
+ * Object representation of report handled with {@link ReportHandler}. A report consists of an enum value indicating the
+ * severity ({@link ReportType}), a message, an optional source position the report originated from, an optional
+ * exception the report originated from, and optional list of hints provided for user convenience.
+ *
+ * @see ReportType
+ * @see ReportHandler
  */
 public final class Report{
 	private final ReportType type;
@@ -68,6 +73,12 @@ public final class Report{
 		for(String hint : this.hints) logger.accept("hint: "+hint);
 	}
 
+	/**
+	 *
+	 * @param sourcePosition
+	 * @param source
+	 * @return
+	 */
 	public static String getLineSnippet(int sourcePosition, Source source){
 		int line = source.lineAt(sourcePosition);
 		int lineStart = source.lineStart(line);

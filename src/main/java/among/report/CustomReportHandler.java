@@ -5,6 +5,12 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.BiConsumer;
 
+/**
+ * Implementation of {@link ReportHandler} that delegates report handling to external code.
+ *
+ * @see ReportHandler#custom(BiConsumer)
+ * @see ReportHandler#custom(Source, BiConsumer)
+ */
 public class CustomReportHandler implements ReportHandler{
 	@Nullable private final Source source;
 	private final BiConsumer<ReportType, String> printer;

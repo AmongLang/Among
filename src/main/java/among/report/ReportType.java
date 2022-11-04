@@ -1,5 +1,11 @@
 package among.report;
 
+/**
+ * Enum values indicating the severity of the report.
+ *
+ * @see Report
+ * @see ReportHandler
+ */
 public enum ReportType{
 	/**
 	 * Report type indicating a simple, general purpose information.

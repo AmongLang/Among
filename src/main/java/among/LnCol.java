@@ -3,7 +3,8 @@ package among;
 import java.util.Objects;
 
 /**
- * Line &amp; Column
+ * Line and column. This object is for displaying purposes; as such, {@link LnCol#line} and {@link LnCol#column} starts
+ * with {@code 1}, rather than {@code 0}.
  */
 public final class LnCol{
 	public final int line, column;
