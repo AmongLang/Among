@@ -199,4 +199,13 @@ public interface ReportHandler{
 	static ReportHandler custom(@Nullable Source src, BiConsumer<ReportType, String> printer){
 		return new CustomReportHandler(src, printer, -1);
 	}
+
+	/**
+	 * Return a report handler that ignores all reports.
+	 *
+	 * @return Report handler that ignores all reports
+	 */
+	static ReportHandler ignore(){
+		return NoOpReportHandler.instance();
+	}
 }
