@@ -1,8 +1,14 @@
 package test;
 
+import among.Source;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +28,14 @@ public class ErrorTests{
 		list.add(errorTest("overlapWarn"));
 		list.add(errorTest("sourcePosition"));
 		return list;
+	}
+
+	@Test public void sourceReadIOException(){
+		Assertions.assertThrows(IOException.class, () -> {
+			Reader r = new StringReader("a");
+			r.close();
+			Source.read(r);
+		}).printStackTrace();
 	}
 
 	private static DynamicTest errorTest(String name){

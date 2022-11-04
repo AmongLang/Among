@@ -30,13 +30,13 @@ public final class Source{
 	 *
 	 * @param reader The reader to be used; it will be closed regardless of success or failure
 	 * @return Source with strings read from {@code reader}
-	 * @throws IOException          If an I/O error occurs
-	 * @throws UncheckedIOException If an I/O error occurs(but it's unchecked(because java's checked exception system
-	 *                              fucking sucks lmao))
+	 * @throws IOException If an I/O error occurs
 	 */
 	public static Source read(Reader reader) throws IOException{
 		try(BufferedReader br = new BufferedReader(reader)){
 			return new Source(br.lines().toArray(String[]::new));
+		}catch(UncheckedIOException ex){
+			throw ex.getCause();
 		}
 	}
 
