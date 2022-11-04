@@ -87,6 +87,16 @@ public final class Report{
 		for(String hint : this.hints) logger.accept("hint: "+hint);
 	}
 
+	@Override public String toString(){
+		return "Report{"+
+				"type="+type+
+				", message='"+message+'\''+
+				", sourcePosition="+sourcePosition+
+				", exception="+exception+
+				", hints="+hints+
+				'}';
+	}
+
 	/**
 	 * Return part of a line around {@code sourcePosition}, taken from {@code source}. The specific position will be
 	 * highlighted with commented inserted between.

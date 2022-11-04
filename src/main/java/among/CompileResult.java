@@ -1,13 +1,9 @@
 package among;
 
 import among.exception.SussyCompile;
-import among.report.Report;
-import among.report.ReportType;
+import among.report.ReportList;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -20,13 +16,13 @@ public final class CompileResult{
 	private final Source source;
 	private final AmongRoot root;
 	private final AmongDefinition definition;
-	private final List<Report> reports;
+	private final ReportList reports;
 
-	public CompileResult(Source source, AmongRoot root, AmongDefinition definition, List<Report> reports){
+	public CompileResult(Source source, AmongRoot root, AmongDefinition definition, ReportList reports){
 		this.source = source;
 		this.root = root;
 		this.definition = definition;
-		this.reports = new ArrayList<>(reports);
+		this.reports = new ReportList(reports);
 	}
 
 	/**
@@ -37,6 +33,7 @@ public final class CompileResult{
 	public Source source(){
 		return source;
 	}
+
 	/**
 	 * The root modified during operation. This object is always present, regardless of whether error was
 	 * reported or not.<br>
@@ -49,6 +46,7 @@ public final class CompileResult{
 	public AmongRoot root(){
 		return root;
 	}
+
 	/**
 	 * Macros and operators defined during operation. Definitions imported are not included in this object. This object
 	 * is always present, regardless of whether error was reported or not.<br>
@@ -61,6 +59,7 @@ public final class CompileResult{
 	public AmongDefinition definition(){
 		return definition;
 	}
+
 	/**
 	 * Objects and definitions modified during operation. Both the objects and definitions are always present,
 	 * regardless of whether error was reported or not.<br>
@@ -73,13 +72,14 @@ public final class CompileResult{
 	public RootAndDefinition rootAndDefinition(){
 		return new RootAndDefinition(root, definition);
 	}
+
 	/**
 	 * Unmodifiable list of all reports.
 	 *
 	 * @return Unmodifiable list of all reports
 	 */
-	public List<Report> reports(){
-		return Collections.unmodifiableList(reports);
+	public ReportList reports(){
+		return reports;
 	}
 
 	/**
@@ -98,9 +98,7 @@ public final class CompileResult{
 	 * @return Whether there are any errors reported or not
 	 */
 	public boolean hasError(){
-		for(Report r : reports)
-			if(r.type()==ReportType.ERROR) return true;
-		return false;
+		return reports.hasError();
 	}
 
 	/**
@@ -109,9 +107,7 @@ public final class CompileResult{
 	 * @return Whether there are any warnings reported or not
 	 */
 	public boolean hasWarning(){
-		for(Report r : reports)
-			if(r.type()==ReportType.WARN) return true;
-		return false;
+		return reports.hasWarning();
 	}
 
 	/**
@@ -124,46 +120,13 @@ public final class CompileResult{
 	}
 
 	public void printReports(){
-		printReports(null);
+		reports.printReports(this.source);
 	}
 	public void printReports(@Nullable String path){
-		if(reports.isEmpty()) return;
-		printReports(path, isSuccess() ? System.out::println : System.err::println);
+		reports.printReports(path, this.source);
 	}
 
 	public void printReports(@Nullable String path, Consumer<String> logger){
-		if(reports.isEmpty()) return;
-		int infoCount = 0;
-		int warningCount = 0;
-		int errorCount = 0;
-		for(Report r : reports){
-			switch(r.type()){
-				case INFO:
-					infoCount++;
-					break;
-				case WARN:
-					warningCount++;
-					break;
-				case ERROR:
-					errorCount++;
-					break;
-			}
-		}
-		List<String> types = new ArrayList<>();
-		if(errorCount>0) types.add(errorCount==1 ? "1 error" : errorCount+" errors");
-		if(warningCount>0) types.add(warningCount==1 ? "1 warning" : warningCount+" warnings");
-		if(infoCount>0) types.add(infoCount+" info");
-
-		StringBuilder stb = new StringBuilder();
-		if(path==null) stb.append("Compilation finished with ");
-		else stb.append("Compilation of script at '").append(path).append("' finished with ");
-		for(int i = 0; i<types.size(); i++){
-			if(i>0) stb.append(i==types.size()-1 ? " and " : ", ");
-			stb.append(types.get(i));
-		}
-
-		logger.accept(stb.toString());
-		for(Report report : this.reports)
-			report.print(this.source, logger);
+		reports.printReports(path, this.source, logger);
 	}
 }

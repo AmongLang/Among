@@ -5,9 +5,6 @@ import among.AmongEngine;
 import among.AmongRoot;
 import among.CompileResult;
 import among.ReadResult;
-import among.report.Report;
-import among.report.ReportHandler;
-import among.report.ReportType;
 import among.Source;
 import among.macro.Macro;
 import among.macro.MacroRegistry;
@@ -21,6 +18,9 @@ import among.operator.OperatorDefinition;
 import among.operator.OperatorProperty;
 import among.operator.OperatorRegistry;
 import among.operator.OperatorType;
+import among.report.ReportHandler;
+import among.report.ReportList;
+import among.report.ReportType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public final class Parser implements ReportHandler{
 	private final AmongDefinition importDefinition;
 	private final AmongEngine engine;
 	private final Tokenizer tokenizer;
-	private final List<Report> reports = new ArrayList<>();
+	private final ReportList reports = new ReportList.Mutable();
 
 	private boolean recovering;
 	@Nullable private ParserMacroBuilder currentMacro;
@@ -779,7 +779,7 @@ public final class Parser implements ReportHandler{
 				Token lastToken = tokenizer.lastToken();
 				if(lastToken!=null) srcIndex = lastToken.start;
 			}
-			reports.add(new Report(type, message, srcIndex, ex, hints));
+			reports.report(type, message, srcIndex, ex, hints);
 		}
 	}
 
