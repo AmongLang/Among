@@ -54,10 +54,24 @@ public final class Report{
 		return Collections.unmodifiableList(hints);
 	}
 
+	/**
+	 * Returns line and column of this report's source position. If this report does not have source position attached,
+	 * {@code null} will be returned instead.
+	 *
+	 * @param source Source
+	 * @return Line and column of this report's source position
+	 */
 	@Nullable public LnCol getLineColumn(Source source){
 		return hasSourcePosition() ? source.getLnCol(sourcePosition) : null;
 	}
 
+	/**
+	 * Prints the content of this report to the {@code logger}. Each string emitted to {@code logger} is expected to be
+	 * displayed as separate lines.
+	 *
+	 * @param source Optional source for additional information, such as line/column index and code snippets
+	 * @param logger Consumer for each line of the message
+	 */
 	public void print(@Nullable Source source, Consumer<String> logger){
 		LnCol lc = source!=null ? getLineColumn(source) : null;
 
@@ -74,10 +88,13 @@ public final class Report{
 	}
 
 	/**
+	 * Return part of a line around {@code sourcePosition}, taken from {@code source}. The specific position will be
+	 * highlighted with commented inserted between.
 	 *
-	 * @param sourcePosition
-	 * @param source
-	 * @return
+	 * @param sourcePosition Codepoint index
+	 * @param source         Source
+	 * @return Part of a line around {@code sourcePosition}
+	 * @throws IndexOutOfBoundsException If {@code sourcePosition < 0}
 	 */
 	public static String getLineSnippet(int sourcePosition, Source source){
 		int line = source.lineAt(sourcePosition);
